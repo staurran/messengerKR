@@ -4,8 +4,9 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
-	"messengerKR/internal/app/dsn"
-	"messengerKR/internal/app/repository"
+	"github.com/staurran/messengerKR.git/internal/app/config"
+	"github.com/staurran/messengerKR.git/internal/app/dsn"
+	"github.com/staurran/messengerKR.git/internal/app/repository"
 )
 
 type Application struct {

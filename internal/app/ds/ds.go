@@ -44,7 +44,7 @@ type Message struct {
 	Context        string    `json:"context"`
 	UserFrom       uint      `json:"userFrom"`
 	UserTo         uint      `json:"userTo"`
-	OriginUserFrom int       `json:"originUserFrom"`
+	OriginUserFrom uint       `json:"originUserFrom"`
 	TimeCreated    time.Time `json:"timeCreated"`
 	TimeUpdated    time.Time `json:"timeUpdated"`
 }
@@ -61,15 +61,22 @@ type AudioMess struct {
 	Link        string `json:"link"`
 }
 
-type GoodOrder struct {
-	Id_row   uint `sql:"type:uuid;primary_key;default:" json:"Id_row" gorm:"primarykey"`
-	Id_good  uint `json:"id_good"`
-	Quantity int  `json:"quantity"`
-	Id_order uint `json:"id_order"`
+type AttachmentMess struct {
+	AttachmentMessId   uint `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
+	MessId  uint `json:"messId"`
+	Link string  `json:"link"`
 }
 
-type Statuses struct {
-	Id_status   uint   `sql:"type:uuid;primary_key;default:" json:"Id_status" gorm:"primarykey"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+type MessageShown struct {
+	MessShowId   uint   `sql:"type:uuid;primary_key;default:" json:"messShowId" gorm:"primarykey"`
+	MessId        uint `json:"messId"`
+	UserId uint `json:"userId"`
+	Shown string `json:"shown"`
+}
+
+type Reaction struct {
+	ReactionId uint   `sql:"type:uuid;primary_key;default:" json:"reactionId" gorm:"primarykey"`
+	MessId uint `json:"messId"`
+	ReactionName string `json:"reactionName"`
+	UserId string `json:"userId"`
 }

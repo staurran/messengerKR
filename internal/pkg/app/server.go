@@ -1,11 +1,13 @@
 package app
 
 import (
+	"log"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"lab3/internal/app/middlewares"
-	"lab3/internal/app/role"
-	"log"
+
+	"github.com/staurran/messengerKR.git/internal/app/constProject"
+	"github.com/staurran/messengerKR.git/internal/app/middlewares"
 )
 
 func (a *Application) StartServer() {
@@ -23,25 +25,25 @@ func (a *Application) StartServer() {
 	public.POST("/register", a.Register)
 	public.POST("/login", a.Login)
 
-	r.GET("/goods", a.GetAll)
-	r.GET("/goods/:id", a.GetProduct)
+	r.GET("/messenger", a.GetAll)
 
-	r.GET("/ping/:name", a.Ping)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).GET("/messenger/k", a.GetChats)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).GET("messenger/chat/:id_chat", a.GetChat)
 
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin, role.User)).POST("/order", a.AddOrder)
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin, role.User)).GET("/order", a.GetAllOrders)
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin, role.User)).DELETE("/order/:id", a.DeleteOrder)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).POST("/order", a.AddOrder)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).GET("/order", a.GetAllOrders)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).DELETE("/order/:id", a.DeleteOrder)
 
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin, role.User)).GET("/order-status", a.GetStatus)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).GET("/order-status", a.GetStatus)
 
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin)).GET("/user", a.CurrentUser)
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin)).POST("/goods", a.PostProduct)
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin)).PUT("/goods", a.ChangeProduct)
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin)).DELETE("goods/:id", a.DeleteProduct)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).GET("/user", a.CurrentUser)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).POST("/goods", a.PostProduct)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).PUT("/goods", a.ChangeProduct)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).DELETE("goods/:id", a.DeleteProduct)
 
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin)).GET("goods/all-orders", a.GetOrders)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).GET("goods/all-orders", a.GetOrders)
 
-	r.Use(middlewares.WithAuthCheck(role.Manager, role.Admin)).PUT("/order/:id_order/:id_status", a.ChangeStatus)
+	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).PUT("/order/:id_order/:id_status", a.ChangeStatus)
 
 	err := r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	if err != nil {

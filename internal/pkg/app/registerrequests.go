@@ -3,11 +3,13 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"lab3/internal/app/ds"
-	"lab3/internal/app/role"
-	"lab3/internal/app/utils/token"
+
 	"log"
 	"net/http"
+
+	"github.com/staurran/messengerKR.git/internal/app/constProject"
+	"github.com/staurran/messengerKR.git/internal/app/ds"
+	"github.com/staurran/messengerKR.git/internal/app/utils/token"
 )
 
 type RegisterInput struct {
@@ -24,7 +26,7 @@ func (a *Application) Register(gCtx *gin.Context) {
 		return
 	}
 	u := ds.Users{}
-	u.Login = input.Username
+	u.Username = input.Username
 	hashedPassword, err := CreatePass(input.Password)
 	log.Println(hashedPassword)
 	if err != nil {
@@ -32,8 +34,8 @@ func (a *Application) Register(gCtx *gin.Context) {
 		return
 	}
 	u.Password = hashedPassword
-	u.Role = role.User
-	err = a.repo.CheckLogin(u.Login)
+	u.Role = constProject.User
+	err = a.repo.CheckLogin(u.Username)
 	if err != nil {
 		gCtx.JSON(http.StatusBadRequest, gin.H{"error": "login was used before"})
 		return
@@ -43,8 +45,8 @@ func (a *Application) Register(gCtx *gin.Context) {
 		gCtx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	token_user, err := token.GenerateToken(u.Id_user, u.Role)
-	gCtx.JSON(http.StatusOK, gin.H{"token": token_user, "role": u.Role})
+	token_user, err := token.GenerateToken(u.UserId, u.Role)
+	gCtx.JSON(http.StatusOK, gin.H{"token": token_user, "constProject": u.Role})
 }
 
 type LoginInput struct {
@@ -64,7 +66,7 @@ func (a *Application) Login(c *gin.Context) {
 
 	u := ds.Users{}
 
-	u.Login = input.Username
+	u.Username = input.Username
 	hashedPassword, err := CreatePass(input.Password)
 	log.Println(hashedPassword)
 	if err != nil {
@@ -77,13 +79,13 @@ func (a *Application) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	log.Println(u.Id_user)
-	token_user, err := token.GenerateToken(u.Id_user, u.Role)
+	log.Println(u.UserId)
+	token_user, err := token.GenerateToken(u.UserId, u.Role)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "problem with token."})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"token": token_user, "role": u.Role})
+	c.JSON(http.StatusOK, gin.H{"token": token_user, "constProject": u.Role})
 
 }
 

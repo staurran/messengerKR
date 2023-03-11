@@ -1,10 +1,12 @@
 package middlewares
 
 import (
-	"github.com/gin-gonic/gin"
-	"lab3/internal/app/role"
-	"lab3/internal/app/utils/token"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/staurran/messengerKR.git/internal/app/constProject"
+	"github.com/staurran/messengerKR.git/internal/app/utils/token"
 )
 
 func JwtAuthMiddleware() gin.HandlerFunc {
@@ -19,7 +21,7 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-func WithAuthCheck(assignedRoles ...role.Role) func(ctx *gin.Context) {
+func WithAuthCheck(assignedRoles ...constProject.Role) func(ctx *gin.Context) {
 	return func(gCtx *gin.Context) {
 		err := token.TokenValid(gCtx)
 		if err != nil {

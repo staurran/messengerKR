@@ -25,25 +25,31 @@ func (a *Application) StartServer() {
 	public.POST("/register", a.Register)
 	public.POST("/login", a.Login)
 
-	r.GET("/messenger", a.GetAll)
+	protected := r.Group("/message").Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User))
 
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).GET("/messenger/k", a.GetChats)
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).GET("messenger/chat/:id_chat", a.GetChat)
+	protected.GET("/messenger/chat/:k", a.GetChats)
+	protected.GET("messenger/chat/:id_chat", a.GetChat)
+	protected.POST("/messenger/chat", a.CreateChat)
+	protected.DELETE("/messenger/chat", a.DeleteChat)
+	protected.PUT("messenger/chat/avatar", a.ChangePhoto)
+	protected.PUT("messenger/chat/description", a.ChangeDescription)
 
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).POST("/order", a.AddOrder)
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).GET("/order", a.GetAllOrders)
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).DELETE("/order/:id", a.DeleteOrder)
+	protected.GET("messenger/chat/users/:id_chat", a.GetChatUsers)
+	protected.POST("messenger/chat/users/:id_chat", a.InviteUser)
+	protected.DELETE("messenger/chat/users/:id_chat", a.DeleteChatUser)
+	protected.PUT("messenger/chat/users/:id_chat", a.ChangeChatRole)
 
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User)).GET("/order-status", a.GetStatus)
+	protected.POST("/messenger/message", a.CreateMessage)
+	protected.POST("messenger/message/view/:id_message", a.PostShowStatus)
+	protected.POST("/messenger/message/reaction", a.CreateReaction)
+	protected.DELETE("/messenger/message/reaction", a.DeleteReaction)
 
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).GET("/user", a.CurrentUser)
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).POST("/goods", a.PostProduct)
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).PUT("/goods", a.ChangeProduct)
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).DELETE("goods/:id", a.DeleteProduct)
+	protected.GET("/messenger/contacts", a.GetContacts)
+	protected.POST("/messenger/contacts", a.CreateContact)
+	protected.DELETE("/messenger/contacts", a.DeleteContact)
 
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).GET("goods/all-orders", a.GetOrders)
-
-	r.Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin)).PUT("/order/:id_order/:id_status", a.ChangeStatus)
+	protected.GET("/messenger/profile/:username", a.GetProfile)
+	protected.PUT("/messenger/profile", a.ChangeProfile)
 
 	err := r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	if err != nil {

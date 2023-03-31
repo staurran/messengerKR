@@ -2,8 +2,6 @@ package token
 
 import (
 	"fmt"
-	"lab3/internal/app/ds"
-	"lab3/internal/app/role"
 	"log"
 	"net/http"
 	"os"
@@ -11,11 +9,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/staurran/messengerKR.git/internal/app/constProject"
+	"github.com/staurran/messengerKR.git/internal/app/ds"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
-func GenerateToken(user_id uint, role_user role.Role) (string, error) {
+func GenerateToken(userID uint, userRole constProject.Role) (string, error) {
 
 	/*StandardClaims: jwt.StandardClaims{
 	ExpiresAt: time.Now().Add(cfg.JWT.ExpiresIn).Unix(),
@@ -31,8 +32,8 @@ func GenerateToken(user_id uint, role_user role.Role) (string, error) {
 			IssuedAt:  time.Now().Unix(),
 			Issuer:    "bitop-admin",
 		},
-		UserID: user_id,   // test uuid
-		Role:   role_user, // test data
+		UserID: userID,   // test uuid
+		Role:   userRole, // test data
 	})
 
 	return token.SignedString([]byte(os.Getenv("API_SECRET")))
@@ -79,7 +80,7 @@ func ExtractTokenID(c *gin.Context) (uint, error) {
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
-		uid, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["user_id"]), 10, 32)
+		uid, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["userId"]), 10, 32)
 		if err != nil {
 			return 0, err
 		}
@@ -88,7 +89,7 @@ func ExtractTokenID(c *gin.Context) (uint, error) {
 	return 0, nil
 }
 
-func ExtractTokenRole(c *gin.Context) (role.Role, error) {
+func ExtractTokenRole(c *gin.Context) (constProject.Role, error) {
 
 	jwtStr := ExtractToken(c)
 	token, err := jwt.ParseWithClaims(jwtStr, &ds.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {

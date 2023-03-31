@@ -16,7 +16,7 @@ type Chat struct {
 	Description string                `json:"description"`
 }
 
-type Users struct {
+type User struct {
 	ID       uint              `sql:"type:uuid;primary_key;default:" json:"userId" gorm:"primarykey"`
 	Role     constProject.Role `json:"role"`
 	Username string            `json:"username"`
@@ -24,6 +24,12 @@ type Users struct {
 	Avatar   string            `json:"avatar"`
 	Phone    string            `json:"phoneNumber"`
 	Bio      string            `json:"bio"`
+}
+
+type Contact struct {
+	ID        uint `sql:"type:uuid;primary_key;default:" json:"userId" gorm:"primarykey"`
+	UserID    uint `json:"userID"`
+	ContactID uint `json:"contactID"`
 }
 
 type ChatUser struct {
@@ -42,32 +48,32 @@ type JWTClaims struct {
 type Message struct {
 	ID           uint      `sql:"type:uuid;primary_key;default:" json:"messageId" gorm:"primarykey"`
 	Context      string    `json:"context"`
+	ChatID       string    `json:"chat"`
 	UserFromID   uint      `json:"userFrom"`
-	UserToID     uint      `json:"userTo"`
 	OriginUserID uint      `json:"originUserFrom"`
 	TimeCreated  time.Time `json:"timeCreated"`
 	TimeUpdated  time.Time `json:"timeUpdated"`
 }
 
-type PhotoMess struct {
+type Photo struct {
 	ID        uint   `sql:"type:uuid;primary_key;default:" json:"photoMessId" gorm:"primarykey"`
 	MessageID uint   `json:"messageId"`
 	Link      string `json:"link"`
 }
 
-type AudioMess struct {
+type Audio struct {
 	ID        uint   `sql:"type:uuid;primary_key;default:" json:"audioMessId" gorm:"primarykey"`
 	MessageID uint   `json:"messageId"`
 	Link      string `json:"link"`
 }
 
-type AttachmentMess struct {
+type Attachment struct {
 	ID        uint   `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
 	MessageID uint   `json:"messId"`
 	Link      string `json:"link"`
 }
 
-type MessageShown struct {
+type Shown struct {
 	ID        uint   `sql:"type:uuid;primary_key;default:" json:"messShowId" gorm:"primarykey"`
 	MessageID uint   `json:"messId"`
 	UserID    uint   `json:"userId"`

@@ -36,14 +36,14 @@ func (a *Application) Register(gCtx *gin.Context) {
 		return
 	}
 
-	u := ds.Users{}
+	u := ds.User{}
 	u.Username = input.Username
 	u.Avatar = input.Avatar
 	u.Phone = input.Phone
 	u.Password = hashedPassword
 	u.Role = constProject.User
 
-	err = a.repo.CheckLogin(u.Username)
+	err = a.repo.CheckUsername(u.Username)
 	if err != nil {
 		gCtx.JSON(http.StatusBadRequest, gin.H{"error": "login was used before"})
 		return
@@ -79,11 +79,11 @@ func (a *Application) Login(c *gin.Context) {
 		return
 	}
 
-	u := ds.Users{}
+	u := ds.User{}
 	u.Username = input.Username
 	u.Password = input.Password
 
-	if err := a.repo.LoginCheck(&u); err != nil {
+	if err := a.repo.Login(&u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -103,6 +103,13 @@ func CreatePass(password string) (string, error) {
 	return string(hashedPassword), err
 }
 
+type CurrentUserResult struct {
+	Username string
+	Avatar   string
+	Phone    string
+	Bio      string
+}
+
 //возвращает информацию о пользователе. Только для админов
 func (a *Application) CurrentUser(c *gin.Context) {
 	userId, err := token.ExtractTokenID(c)
@@ -111,12 +118,14 @@ func (a *Application) CurrentUser(c *gin.Context) {
 		return
 	}
 
-	u, err := a.repo.GetUserByID(userId)
+	user, err := a.repo.GetUserByID(userId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": u})
+	resultUser := CurrentUserResult{user.Username, user.Avatar, user.Phone, user.Bio}
+
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": resultUser})
 }

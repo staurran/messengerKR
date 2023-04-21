@@ -12,14 +12,6 @@ import (
 	"github.com/staurran/messengerKR.git/internal/app/utils/token"
 )
 
-type RegisterInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Avatar   string `json:"avatar"`
-	Phone    string `json:"phone" binding:"required"`
-	Bio      string `json:"bio"`
-}
-
 //функция регистрации
 func (a *Application) Register(gCtx *gin.Context) {
 	var input RegisterInput
@@ -64,11 +56,6 @@ func (a *Application) Register(gCtx *gin.Context) {
 	gCtx.JSON(http.StatusOK, gin.H{"token": token_user, "constProject": u.Role})
 }
 
-type LoginInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
 //функция входа/авторизации
 func (a *Application) Login(c *gin.Context) {
 
@@ -101,13 +88,6 @@ func (a *Application) Login(c *gin.Context) {
 func CreatePass(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(hashedPassword), err
-}
-
-type CurrentUserResult struct {
-	Username string
-	Avatar   string
-	Phone    string
-	Bio      string
 }
 
 //возвращает информацию о пользователе. Только для админов

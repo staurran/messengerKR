@@ -2,25 +2,13 @@ package app
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/staurran/messengerKR.git/internal/app/constProject"
 	"github.com/staurran/messengerKR.git/internal/app/ds"
-	"github.com/staurran/messengerKR.git/internal/app/repository"
 	"github.com/staurran/messengerKR.git/internal/app/utils/token"
 )
-
-type ChatStruct struct {
-	ID                  uint `json:"id"`
-	Name                string
-	Avatar              string
-	QuantityUnshownMess int64 `json:"quantityUnshownMess"`
-	repository.LastMessage
-}
-type GetChatsResult struct {
-	chats []ChatStruct
-}
 
 func (a *Application) GetChats(gCtx *gin.Context) {
 	userID, err := token.ExtractTokenID(gCtx)
@@ -35,44 +23,29 @@ func (a *Application) GetChats(gCtx *gin.Context) {
 		gCtx.IndentedJSON(http.StatusInternalServerError, answer)
 		return
 	}
-	var result GetChatsResult
-	for _, chat := range chats {
-		lastMes, err := a.repo.GetLastMes(chat.ID)
-		if err != nil {
-			answer := AnswerJSON{Status: "error", Description: "cant extract userID"}
-			gCtx.IndentedJSON(http.StatusInternalServerError, answer)
-			return
-		}
-		UnshownMes, err := a.repo.GetQuantityShownMes(chat.ID, userID)
-		if err != nil {
-			answer := AnswerJSON{Status: "error", Description: "cant extract userID"}
-			gCtx.IndentedJSON(http.StatusInternalServerError, answer)
-			return
-		}
-		resultChat := ChatStruct{chat.ID, chat.Name, chat.Avatar, UnshownMes, lastMes}
 
-		result.chats = append(result.chats, resultChat)
+	var result []ChatStruct
+	for _, chat := range chats {
+		lastMes, err := a.repo.GetLastMes(chat.Id)
+		if err != nil {
+			answer := AnswerJSON{Status: "error", Description: "cant extract userID"}
+			gCtx.IndentedJSON(http.StatusInternalServerError, answer)
+			return
+		}
+
+		resultChat := ChatStruct{chat.Id, chat.Name, chat.Avatar, chat.CountMes, lastMes}
+
+		result = append(result, resultChat)
 	}
 	if err != nil {
 		answer := AnswerJSON{Status: "error", Description: "cant get all rows"}
 		gCtx.IndentedJSON(http.StatusInternalServerError, answer)
 		return
 	}
-	gCtx.IndentedJSON(http.StatusOK, chats)
+	mapResp := make(map[string]interface{})
+	mapResp["chats"] = result
+	gCtx.IndentedJSON(http.StatusOK, mapResp)
 
-}
-
-type UserChat struct {
-	UserId   uint                  `json:"userId"`
-	Username string                `json:"username"`
-	Role     constProject.ChatRole `json:"role"`
-}
-type InpCreateChat struct {
-	Users       []UserChat            `json:"users"`
-	Name        string                `json:"name"`
-	Avatar      string                `json:"avatar"`
-	Description string                `json:"description"`
-	Type        constProject.TypeChat `json:"type"`
 }
 
 func (a *Application) CreateChat(gCtx *gin.Context) {
@@ -113,11 +86,27 @@ func (a *Application) CreateChat(gCtx *gin.Context) {
 			return
 		}
 	}
+	gCtx.IndentedJSON(http.StatusOK, nil)
 }
 
 func (a *Application) DeleteChat(gCtx *gin.Context) {
-	chatId := gCtx.Param("id_chat")
-	err := a.repo.DeleteChat(chatId)
+	chatIdStr := gCtx.Param("id_chat")
+	chatId, err := strconv.Atoi(chatIdStr)
+	if err != nil {
+		gCtx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	userId, err := token.ExtractTokenID(gCtx)
+	if err != nil {
+		gCtx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err = a.repo.DeleteChat(uint(chatId), userId)
+	if err != nil {
+		gCtx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 }
 
 //// GetAll godoc

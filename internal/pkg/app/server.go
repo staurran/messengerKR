@@ -28,7 +28,7 @@ func (a *Application) StartServer() {
 
 	protected := r.Group("/message").Use(middlewares.WithAuthCheck(constProject.Manager, constProject.Admin, constProject.User))
 
-	protected.GET("/chats/:id_user/:k", a.GetChats)
+	protected.GET("/chats/:k", a.GetChats)
 	//protected.GET("messenger/chat/:id_chat", a.GetChat)
 	protected.POST("/messenger/chat", a.CreateChat)
 	protected.DELETE("/messenger/chat/:id_chat", a.DeleteChat)
@@ -45,12 +45,12 @@ func (a *Application) StartServer() {
 	//protected.POST("/messenger/message/reaction", a.CreateReaction)
 	//protected.DELETE("/messenger/message/reaction", a.DeleteReaction)
 
-	//protected.GET("/messenger/contacts", a.GetContacts)
-	//protected.POST("/messenger/contacts", a.CreateContact)
+	protected.GET("/messenger/contacts", a.GetContacts)
+	protected.POST("/messenger/contacts", a.CreateContact)
 	//protected.DELETE("/messenger/contacts", a.DeleteContact)
 
-	//protected.GET("/messenger/profile/:username", a.GetProfile)
-	//protected.PUT("/messenger/profile", a.ChangeProfile)
+	protected.GET("/messenger/profile/:username", a.GetProfile)
+	protected.PUT("/messenger/profile", a.ChangeProfile)
 
 	err := r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	if err != nil {

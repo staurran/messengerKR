@@ -44,3 +44,52 @@ func (r *Repository) GetIdByUsername(username string) (uint, error) {
 	}
 	return user.ID, nil
 }
+
+func (r *Repository) ChangeUser(userInp ds.User) error {
+	userDB := &ds.User{}
+	err := r.db.First(userDB, "id = ?", userInp.ID).Error // find product with code D42
+	if err != nil {
+		return err
+	}
+	if userInp.Username != "" {
+		userDB.Username = userInp.Username
+	}
+	if userInp.Avatar != "" {
+		userDB.Avatar = userInp.Avatar
+	}
+	if userInp.Bio != "" {
+		userDB.Bio = userInp.Bio
+	}
+	if userInp.Phone != "" {
+		userDB.Password = userInp.Password
+	}
+	err = r.db.Save(&userDB).Error
+	return err
+}
+
+func (r *Repository) GetContacts(userId uint) (contacts []ds.User, err error) {
+	err = r.db.Find(&contacts, "user_id = ?", userId).Error
+	return
+}
+
+func (r *Repository) GetUserIdByPhone(phone string) (userId uint, err error) {
+	user := &ds.User{}
+	err = r.db.First(user, "phone = ?", phone).Error
+
+	return user.ID, err
+}
+
+func (r *Repository) CreateContact(contact ds.Contact) error {
+	err := r.db.Create(contact).Error
+	return err
+}
+
+func (r *Repository) DeleteContact(userId, contactId uint) error {
+	contact := &ds.Contact{}
+	err := r.db.First(contact, "user_id = ? contact_id = ?", userId, contactId).Error
+	if err != nil {
+		return err
+	}
+	err = r.db.Delete(contact).Error
+	return err
+}

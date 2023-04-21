@@ -48,7 +48,7 @@ type JWTClaims struct {
 type Message struct {
 	ID           uint      `sql:"type:uuid;primary_key;default:" json:"messageId" gorm:"primarykey"`
 	Context      string    `json:"context"`
-	ChatID       string    `json:"chat"`
+	ChatID       uint      `json:"chat"`
 	UserFromID   uint      `json:"userFrom"`
 	OriginUserID uint      `json:"originUserFrom"`
 	TimeCreated  time.Time `json:"timeCreated"`

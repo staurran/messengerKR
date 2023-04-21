@@ -22,33 +22,36 @@ func New(dsn string) (*Repository, error) {
 	}, nil
 }
 
-func (r *Repository) GetChats(userID uint, k int) ([]ds.Chat, error) {
-	var chats []ds.Chat
-	subQuery := r.db.Model(ds.Message{}).Select("messages.id, messages.context, messages.user_from, messages.chat_id").Where("message.chat_id = chat.id")
-	result := r.db.Find(&chats, "id_user = ?", userID).
-		Joins("Join messages on chat.id = messages.chat_id").
-		Where("messages.time_created = Max(?)", subQuery).
-		Order("message.time_created")
-	if result.Error != nil {
-		return nil, result.Error
+func (r *Repository) GetChats(userID uint, k int) ([]ChatStruct, error) {
+	var chatId []uint
+	err := r.db.Table("chat_users").Select("chat_id").Find(&chatId, "user_id = ?", userID).Error
+	if err != nil {
+		return nil, err
 	}
-	return chats, nil
+
+	//subQuery := r.db.Model(ds.Message{}).Select("messages.id, messages.context, messages.user_from, messages.chat_id").
+	//	Where("message.chat_id = chat.id")
+	var chat []ChatStruct
+	err = r.db.Table("chats ch").Select("ch.id, ch.name, ch.avatar, COUNT(m.id) as count_mes").
+		Joins("Join messages m ON m.chat_id = ch.id").
+		Where("ch.id IN ?", chatId).
+		Order("COUNT(m.id)").
+		Group("ch.id, ch.name, ch.avatar").
+		Find(&chat).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return chat, nil
 }
 
 func (r *Repository) GetLastMes(chatId uint) (lastMessage LastMessage, err error) {
-	var message ds.Message
-	err = r.db.First(&message, "chat_id = ?", chatId).Error
-	if err != nil {
-		return
-	}
-
-	user, err := r.GetUserByID(message.UserFromID)
-	if err != nil {
-		return
-	}
-
-	lastMessage.Content = message.Context
-	lastMessage.UserName = user.Username
+	err = r.db.Table("messages m").Select("m.context as content, u.username").
+		Joins("Join users u ON u.id = m.user_from_id").
+		Where("m.chat_id = ?", chatId).
+		Order("time_created desc").
+		Limit(1).
+		Find(&lastMessage).Error
 
 	return lastMessage, nil
 }

@@ -1,29 +1,27 @@
 package ds
 
-import (
-	"time"
-
-	"github.com/dgrijalva/jwt-go"
-
-	"github.com/staurran/messengerKR.git/internal/app/constProject"
-)
+import "github.com/staurran/messengerKR.git/internal/app/constProject"
 
 type Chat struct {
-	ID          uint                  `sql:"type:uuid;primary_key;default:" json:"chatId" gorm:"primarykey"`
-	Type        constProject.TypeChat `json:"type"`
-	Name        string                `json:"chatName"`
-	Avatar      string                `json:"avatar"`
-	Description string                `json:"description"`
+	ID          uint   `sql:"type:uuid;primary_key;default:" json:"chatId" gorm:"primarykey"`
+	Name        string `json:"chatName"`
+	Avatar      uint   `json:"avatar"`
+	Description string `json:"description"`
 }
 
 type User struct {
-	ID       uint              `sql:"type:uuid;primary_key;default:" json:"userId" gorm:"primarykey"`
-	Role     constProject.Role `json:"role"`
-	Username string            `json:"username"`
-	Password string            `json:"password"`
-	Avatar   string            `json:"avatar"`
-	Phone    string            `json:"phoneNumber"`
-	Bio      string            `json:"bio"`
+	Id       uint   `sql:"type:uuid;primary_key;default:" json:"userId" gorm:"primarykey"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Phone    string `json:"phoneNumber"`
+	Bio      string `json:"bio"`
+}
+
+type UserPhoto struct {
+	Id     uint `sql:"unique;type:uuid;primary_key;servicedefault:" json:"userPhotoId" gorm:"primaryKey;unique"`
+	UserId uint `json:"userId" gorm:"foreignKey"`
+	Photo  uint `json:"photo"`
+	Avatar bool `json:"avatar"`
 }
 
 type Contact struct {
@@ -39,45 +37,22 @@ type ChatUser struct {
 	ChatRole constProject.ChatRole `json:"chatRole"`
 }
 
-type JWTClaims struct {
-	jwt.StandardClaims
-	UserID uint `json:"userId"`
-	Role   constProject.Role
-}
-
-type Message struct {
-	ID           uint      `sql:"type:uuid;primary_key;default:" json:"messageId" gorm:"primarykey"`
-	Context      string    `json:"context"`
-	ChatID       uint      `json:"chat"`
-	UserFromID   uint      `json:"userFrom"`
-	OriginUserID uint      `json:"originUserFrom"`
-	TimeCreated  time.Time `json:"timeCreated"`
-	TimeUpdated  time.Time `json:"timeUpdated"`
-}
-
 type Photo struct {
 	ID        uint   `sql:"type:uuid;primary_key;default:" json:"photoMessId" gorm:"primarykey"`
 	MessageID uint   `json:"messageId"`
-	Link      string `json:"link"`
+	Photo     string `json:"link"`
 }
 
 type Audio struct {
 	ID        uint   `sql:"type:uuid;primary_key;default:" json:"audioMessId" gorm:"primarykey"`
 	MessageID uint   `json:"messageId"`
-	Link      string `json:"link"`
+	Audio     string `json:"link"`
 }
 
 type Attachment struct {
-	ID        uint   `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
-	MessageID uint   `json:"messId"`
-	Link      string `json:"link"`
-}
-
-type Shown struct {
-	ID        uint   `sql:"type:uuid;primary_key;default:" json:"messShowId" gorm:"primarykey"`
-	MessageID uint   `json:"messId"`
-	UserID    uint   `json:"userId"`
-	Shown     string `json:"shown"`
+	ID         uint   `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
+	MessageID  uint   `json:"messId"`
+	Attachment string `json:"link"`
 }
 
 type Reaction struct {

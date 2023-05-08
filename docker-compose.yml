@@ -12,10 +12,49 @@ services: # имеджи, которые запустятся по вашему 
       POSTGRES_USER: bmstu_user
       POSTGRES_DB: bmstu
       POSTGRES_PASSWORD: bmstu_password
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass password
+    volumes:
+      - redis-data:/data
+  db-storage:
+    image: postgres:latest
+    volumes:
+      - type: volume
+        source: postgresstore-data
+        target: /var/lib/postgresql/data
 
+    environment:
+      POSTGRES_DB: "bmstu_storage"
+      POSTGRES_USER: "bmstu_user"
+      POSTGRES_PASSWORD: "bmstu_password"
+    ports:
+      - "5433:5432"
+  db-chat:
+    image: postgres:latest
+    volumes:
+      - type: volume
+        source: postgreschat-data
+        target: /var/lib/postgresql/data
+
+    environment:
+      POSTGRES_DB: "bmstu_chat"
+      POSTGRES_USER: "bmstu_user"
+      POSTGRES_PASSWORD: "bmstu_password"
+    ports:
+      - "5434:5432"
 
 volumes: # часть настроек для хранения данных
   postgresdb-data:
+    driver: local
+  redis-data:
+    driver: local
+  postgresstore-data:
+    driver: local
+  postgreschat-data:
     driver: local
 
 

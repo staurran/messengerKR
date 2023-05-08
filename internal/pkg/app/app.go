@@ -1,32 +1,17 @@
 package app
 
 import (
-	"context"
-
-	"github.com/gin-gonic/gin"
-	"github.com/staurran/messengerKR.git/internal/app/config"
-	"github.com/staurran/messengerKR.git/internal/app/dsn"
-	"github.com/staurran/messengerKR.git/internal/app/repository"
+	"github.com/gorilla/mux"
 )
 
 type Application struct {
-	Conf   *config.Config
-	repo   *repository.Repository
-	Router gin.IRouter
+	Router *mux.Router
 }
 
-func New(ctx context.Context) (*Application, error) {
-	cnf, err := config.NewConfig(ctx)
-	if err != nil {
-		return nil, err
-	}
+func New() *Application {
+	router := mux.NewRouter()
 
-	dsnStr := dsn.FromEnv()
-	rep, err := repository.New(dsnStr)
-	if err != nil {
-		return nil, err
-	}
-	a := &Application{Conf: cnf, repo: rep}
+	a := &Application{Router: router}
 
-	return a, nil
+	return a
 }

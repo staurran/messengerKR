@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/staurran/messengerKR.git/internal/app/ds"
+	"github.com/staurran/messengerKR.git/internal/app/structs"
 )
 
 type Repository struct {
@@ -22,7 +23,7 @@ func New(dsn string) (*Repository, error) {
 	}, nil
 }
 
-func (r *Repository) GetChats(userID uint, k int) ([]ChatStruct, error) {
+func (r *Repository) GetChats(userID uint, k int) ([]structs.ChatRepoStruct, error) {
 	var chatId []uint
 	err := r.db.Table("chat_users").Select("chat_id").Find(&chatId, "user_id = ?", userID).Error
 	if err != nil {
@@ -30,8 +31,8 @@ func (r *Repository) GetChats(userID uint, k int) ([]ChatStruct, error) {
 	}
 
 	//subQuery := r.db.Model(ds.Message{}).Select("messages.id, messages.context, messages.user_from, messages.chat_id").
-	//	Where("message.chat_id = chat.id")
-	var chat []ChatStruct
+	//	Where("message.chat_id = chat2.id")
+	var chat []structs.ChatRepoStruct
 	err = r.db.Table("chats ch").Select("ch.id, ch.name, ch.avatar, COUNT(m.id) as count_mes").
 		Joins("Join messages m ON m.chat_id = ch.id").
 		Where("ch.id IN ?", chatId).
@@ -45,7 +46,7 @@ func (r *Repository) GetChats(userID uint, k int) ([]ChatStruct, error) {
 	return chat, nil
 }
 
-func (r *Repository) GetLastMes(chatId uint) (lastMessage LastMessage, err error) {
+func (r *Repository) GetLastMes(chatId uint) (lastMessage structs.LastMessage, err error) {
 	err = r.db.Table("messages m").Select("m.context as content, u.username").
 		Joins("Join users u ON u.id = m.user_from_id").
 		Where("m.chat_id = ?", chatId).

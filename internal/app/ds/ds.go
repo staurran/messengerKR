@@ -1,6 +1,8 @@
 package ds
 
-import "github.com/staurran/messengerKR.git/internal/app/constProject"
+import (
+	"github.com/staurran/messengerKR.git/internal/app/constProject"
+)
 
 type Chat struct {
 	ID          uint   `sql:"type:uuid;primary_key;default:" json:"chatId" gorm:"primarykey"`

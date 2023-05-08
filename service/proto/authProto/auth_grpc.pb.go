@@ -91,7 +91,7 @@ type AuthServer interface {
 	CheckSession(context.Context, *UserToken) (*UserResponse, error)
 	Logout(context.Context, *UserToken) (*Response, error)
 	ChangeUser(context.Context, *UserChangeInfo) (*Response, error)
-	mustEmbedUnimplementedAuthServer()
+	//mustEmbedUnimplementedAuthServer()
 }
 
 // UnimplementedAuthServer must be embedded to have forward compatible implementations.

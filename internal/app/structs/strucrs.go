@@ -1,6 +1,10 @@
 package structs
 
-import "github.com/staurran/messengerKR.git/internal/app/constProject"
+import (
+	"time"
+
+	"github.com/staurran/messengerKR.git/internal/app/constProject"
+)
 
 type ChatStruct struct {
 	Id                  uint `json:"id"`
@@ -45,11 +49,10 @@ type Message struct {
 	Content      string `json:"content"`
 	UserFrom     string `json:"userFrom"`
 	OriginalUser string `json:"originalUser"`
-	Attachment   []string
-	Photos       []string
-	Audio        string
-	TimeCreated  string
-	Updated      bool
+	Attachment   []uint
+	Photos       []uint
+	Audio        uint
+	TimeCreated  time.Time
 	Reactions    []ReactionMes
 	Shown        bool
 }

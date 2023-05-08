@@ -8,4 +8,6 @@ type IRepositoryPhoto interface {
 	DeleteChatUser(user ds.ChatUser) error
 	CheckAdmin(userId, chatId uint) error
 	ChangeChat(chat ds.Chat) error
+	GetChats(userId uint) ([]ChatRepoStruct, error)
+	GetLastMes(chatId uint) (LastMessage, error)
 }

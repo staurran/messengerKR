@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"gorm.io/gorm"
+
 	dataStruct "github.com/staurran/messengerKR.git/internal/app/ds"
 	"github.com/staurran/messengerKR.git/internal/app/structs"
 )
@@ -10,12 +12,12 @@ type ChatRepository struct {
 }
 
 func (r *ChatRepository) CreateChat(chat dataStruct.Chat) error {
-	err = r.db.Create(&chat).Error
+	err := r.db.Create(&chat).Error
 	return err
 }
 
 func (r *ChatRepository) SaveChatUser(user dataStruct.ChatUser) error {
-	err = r.db.Create(&user).Error
+	err := r.db.Create(&user).Error
 	return err
 }
 

@@ -55,4 +55,15 @@ func (uc *ChatUseCase) GetChats(userId uint) ([]chat.ChatStruct, error) {
 		return nil, err
 	}
 
+	var result []chat.ChatStruct
+	for _, c := range chats {
+		lastMes, err := uc.ChatRepo.GetLastMes(c.Id)
+		if err != nil {
+			return nil, err
+		}
+		resultChat := chat.ChatStruct{c.Id, c.Name, c.Avatar, c.CountMes, lastMes}
+
+		result = append(result, resultChat)
+	}
+	return result, nil
 }

@@ -9,6 +9,13 @@ type ChatInp struct {
 	Users       []uint `json:"users"`
 }
 
+type ChatRepoStruct struct {
+	Id       uint `json:"id"`
+	Name     string
+	Avatar   string
+	CountMes int64 `json:"count_mes"`
+}
+
 type ChatStruct struct {
 	Id                  uint `json:"id"`
 	Name                string

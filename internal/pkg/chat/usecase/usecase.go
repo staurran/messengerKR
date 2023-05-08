@@ -37,3 +37,22 @@ func (uc *ChatUseCase) DeleteChat(chatId uint, userId uint) error {
 	err := uc.ChatRepo.DeleteChatUser(chatUser)
 	return err
 }
+
+func (uc *ChatUseCase) ChangeChat(chatId uint, userId uint, chat chat.ChatInp) error {
+	err := uc.ChatRepo.CheckAdmin(userId, chatId)
+	if err != nil {
+		return err
+	}
+
+	NewChat := ds.Chat{Name: chat.Name, Description: chat.Description}
+	err = uc.ChatRepo.ChangeChat(NewChat)
+	return err
+}
+
+func (uc *ChatUseCase) GetChats(userId uint) ([]chat.ChatStruct, error) {
+	chats, err := uc.ChatRepo.GetChats(userId)
+	if err != nil {
+		return nil, err
+	}
+
+}

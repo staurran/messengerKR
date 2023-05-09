@@ -42,21 +42,21 @@ type ChatUser struct {
 }
 
 type Photo struct {
-	Id        uint `sql:"type:uuid;primary_key;default:" json:"photoMessId" gorm:"primarykey"`
-	MessageID uint `json:"messageId"`
-	Photo     uint `json:"photo"`
+	Id        uint   `sql:"type:uuid;primary_key;default:" json:"photoMessId" gorm:"primarykey"`
+	MessageID uint   `json:"messageId"`
+	Photo     string `json:"photo"`
 }
 
 type Audio struct {
 	Id        uint   `sql:"type:uuid;primary_key;default:" json:"audioMessId" gorm:"primarykey"`
 	MessageID uint   `json:"messageId"`
-	Audio     string `json:"link"`
+	Audio     string `json:"audio"`
 }
 
 type Attachment struct {
-	Id         uint `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
-	MessageID  uint `json:"messId"`
-	Attachment uint `json:"attachment"`
+	Id         uint   `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
+	MessageID  uint   `json:"messId"`
+	Attachment string `json:"attachment"`
 }
 
 type Reaction struct {

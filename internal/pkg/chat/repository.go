@@ -14,6 +14,6 @@ type IRepositoryPhoto interface {
 	CreateMesUserShown(msg []ds.Shown) error
 	GetChatUsers(chatId uint) ([]uint, error)
 	SaveAttachments([]ds.Attachment) error
-	SavePhotos(photos []ds.Photo) error
+	SavePhoto(photo []ds.Photo) error
 	SaveAudio(audio ds.Audio) error
 }

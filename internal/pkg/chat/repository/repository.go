@@ -34,13 +34,27 @@ func (r *ChatRepository) DeleteChatUser(user ds.ChatUser) error {
 	return err
 }
 
-func (r *ChatRepository) GetChats(userId uint) ([]structs.ChatStruct, error) {
-	var chats []structs.ChatStruct
-	err := r.db.Table("chats c").Select(
-		"c.id, c.name, c.avatar, c.description").
-		Joins("Join chatuser cu ON c.id = cu.chat_id").
-		Where("cu.user_id=?", userId).Find(&chats).Error
-	return chats, err
+func (r *ChatRepository) GetChats(userID uint, k int) ([]structs.ChatRepoStruct, error) {
+	var chatId []uint
+	err := r.db.Table("chat_users").Select("chat_id").Find(&chatId, "user_id = ?", userID).Error
+	if err != nil {
+		return nil, err
+	}
+
+	//subQuery := r.db.Model(ds.Message{}).Select("messages.id, messages.context, messages.user_from, messages.chat_id").
+	//	Where("message.chat_id = chat2.id")
+	var chat []structs.ChatRepoStruct
+	err = r.db.Table("chats ch").Select("ch.id, ch.name, ch.avatar, COUNT(m.id) as count_mes").
+		Joins("Join messages m ON m.chat_id = ch.id").
+		Where("ch.id IN ?", chatId).
+		Order("COUNT(m.id)").
+		Group("ch.id, ch.name, ch.avatar").
+		Find(&chat).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return chat, nil
 }
 
 func (r *ChatRepository) ChangeChat(chatInp ds.Chat) error {
@@ -84,4 +98,36 @@ func (r *ChatRepository) GetLastMes(chatId uint) (lastMessage structs.LastMessag
 		Find(&lastMessage).Error
 
 	return lastMessage, nil
+}
+
+func (r *ChatRepository) CreateMessage(message ds.Message) error {
+	err := r.db.Create(&message).Error
+	return err
+}
+
+func (r *ChatRepository) CreateMesUserShown(msg ds.Shown) error {
+	err := r.db.Create(&msg).Error
+	return err
+}
+
+func (r *ChatRepository) GetChatUsers(chatId uint) ([]uint, error) {
+	var chatusers []uint
+	err := r.db.Table("chatusers").Select("user_id").
+		Find(&chatusers, "chat_id = ?", chatId).Error
+	return chatusers, err
+}
+
+func (r *ChatRepository) SaveAttachments(attachment ds.Attachment) error {
+	err := r.db.Create(&attachment).Error
+	return err
+}
+
+func (r *ChatRepository) SavePhotos(photos ds.Photo) error {
+	err := r.db.Create(&photos).Error
+	return err
+}
+
+func (r *ChatRepository) SaveAudio(audio ds.Audio) error {
+	err := r.db.Create(&audio).Error
+	return err
 }

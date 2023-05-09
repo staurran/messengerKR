@@ -42,9 +42,9 @@ type ChatUser struct {
 }
 
 type Photo struct {
-	Id        uint   `sql:"type:uuid;primary_key;default:" json:"photoMessId" gorm:"primarykey"`
-	MessageID uint   `json:"messageId"`
-	Photo     string `json:"link"`
+	Id        uint `sql:"type:uuid;primary_key;default:" json:"photoMessId" gorm:"primarykey"`
+	MessageID uint `json:"messageId"`
+	Photo     uint `json:"photo"`
 }
 
 type Audio struct {

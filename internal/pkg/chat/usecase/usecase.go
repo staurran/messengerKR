@@ -87,14 +87,36 @@ func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
 		shownSlice = append(shownSlice, showRow)
 	}
 	err = uc.ChatRepo.CreateMesUserShown(shownSlice)
+	if err != nil {
+		return err
+	}
 
 	var attachmentSlice []ds.Attachment
-
 	for _, attachment := range inp.Attachment {
 		attachRow := ds.Attachment{MessageID: msg.Id, Attachment: attachment}
 		attachmentSlice = append(attachmentSlice, attachRow)
 	}
 	err = uc.ChatRepo.SaveAttachments(attachmentSlice)
+	if err != nil {
+		return err
+	}
+
+	var photoSlice []ds.Photo
+	for _, photo := range inp.Photos {
+		photoRow := ds.Photo{MessageID: msg.Id, Photo: photo}
+		attachmentSlice = append(attachmentSlice, photoRow)
+	}
+	err = uc.ChatRepo.SaveAttachments(attachmentSlice)
+	if err != nil {
+		return err
+	}
+
+	if inp.Audio != 0 {
+		audio := ds.Audio{
+			Audio:     inp.Audio,
+			MessageID: msg.Id,
+		}
+	}
 
 	return nil
 }

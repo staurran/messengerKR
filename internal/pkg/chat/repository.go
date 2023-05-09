@@ -10,4 +10,7 @@ type IRepositoryPhoto interface {
 	ChangeChat(chat ds.Chat) error
 	GetChats(userId uint) ([]ChatRepoStruct, error)
 	GetLastMes(chatId uint) (LastMessage, error)
+	CreateMessage(message ds.Message) error
+	CreateMesUserShown(msg []ds.Shown) error
+	GetChatUsers(chatId uint) ([]uint, error)
 }

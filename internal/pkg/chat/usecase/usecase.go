@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"time"
+
 	"github.com/staurran/messengerKR.git/internal/app/constProject"
 	"github.com/staurran/messengerKR.git/internal/app/ds"
 	"github.com/staurran/messengerKR.git/internal/pkg/chat"
@@ -69,5 +71,7 @@ func (uc *ChatUseCase) GetChats(userId uint) ([]chat.ChatStruct, error) {
 }
 
 func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
+	msg := ds.Message{Content: inp.Content, UserId: userId, ChatId: inp.ChatId, Time: time.Now(), Shown: false}
+
 	return nil
 }

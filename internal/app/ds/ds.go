@@ -54,16 +54,16 @@ type Audio struct {
 }
 
 type Attachment struct {
-	Id         uint   `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
-	MessageID  uint   `json:"messId"`
-	Attachment string `json:"link"`
+	Id         uint `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
+	MessageID  uint `json:"messId"`
+	Attachment uint `json:"attachment"`
 }
 
 type Reaction struct {
 	Id        uint   `sql:"type:uuid;primary_key;default:" json:"reactionId" gorm:"primarykey"`
 	MessageID uint   `json:"messId"`
 	Name      string `json:"reactionName"`
-	UserID    string `json:"userId"`
+	UserID    uint   `json:"userId"`
 }
 
 type Message struct {
@@ -79,4 +79,5 @@ type Shown struct {
 	Id        uint `sql:"type:uuid;primary_key;default:" json:"shownId" gorm:"primarykey"`
 	MessageId uint
 	UserId    uint
+	Shown     bool
 }

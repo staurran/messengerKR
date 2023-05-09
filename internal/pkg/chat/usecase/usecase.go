@@ -72,6 +72,29 @@ func (uc *ChatUseCase) GetChats(userId uint) ([]chat.ChatStruct, error) {
 
 func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
 	msg := ds.Message{Content: inp.Content, UserId: userId, ChatId: inp.ChatId, Time: time.Now(), Shown: false}
+	chatUsers, err := uc.ChatRepo.GetChatUsers(inp.ChatId)
+	if err != nil {
+		return err
+	}
+	err = uc.ChatRepo.CreateMessage(&msg)
+	if err != nil {
+		return err
+	}
+
+	var shownSlice []ds.Shown
+	for _, user := range chatUsers {
+		showRow := ds.Shown{UserId: user, MessageId: msg.Id, Shown: false}
+		shownSlice = append(shownSlice, showRow)
+	}
+	err = uc.ChatRepo.CreateMesUserShown(shownSlice)
+
+	var attachmentSlice []ds.Attachment
+
+	for _, attachment := range inp.Attachment {
+		attachRow := ds.Attachment{MessageID: msg.Id, Attachment: attachment}
+		attachmentSlice = append(attachmentSlice, attachRow)
+	}
+	err = uc.ChatRepo.SaveAttachments(attachmentSlice)
 
 	return nil
 }

@@ -44,6 +44,7 @@ func (h *Handler) DeleteContact(w http.ResponseWriter, r *http.Request) {
 		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
 		return
 	}
+
 	contact, err := strconv.Atoi(contactStr)
 	if err != nil {
 		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)

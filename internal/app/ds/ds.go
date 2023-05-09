@@ -1,6 +1,8 @@
 package ds
 
 import (
+	"time"
+
 	"github.com/staurran/messengerKR.git/internal/app/constProject"
 )
 
@@ -65,5 +67,16 @@ type Reaction struct {
 }
 
 type Message struct {
-	Id
+	Id      uint `sql:"type:uuid;primary_key;default:" json:"messageId" gorm:"primarykey"`
+	Content string
+	Time    time.Time
+	UserId  uint
+	ChatId  uint
+	Shown   bool
+}
+
+type Shown struct {
+	Id        uint `sql:"type:uuid;primary_key;default:" json:"shownId" gorm:"primarykey"`
+	MessageId uint
+	UserId    uint
 }

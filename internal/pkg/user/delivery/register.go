@@ -1,0 +1,29 @@
+package delivery
+
+import (
+	"github.com/gorilla/mux"
+	"github.com/staurran/messengerKR.git/internal/pkg/user"
+)
+
+type Handler struct {
+	useCase user.UseCase
+}
+
+func NewHandler(useCase user.UseCase) *Handler {
+	return &Handler{
+		useCase: useCase,
+	}
+}
+
+func RegisterHTTPEndpoints(router *mux.Router, uc user.UseCase) {
+	h := NewHandler(uc)
+	router.HandleFunc("/iuchat/contacts", h.CreateContact).Methods("POST")
+	router.HandleFunc("/iuchat/contacts/{contact}", h.DeleteContact).Methods("DELETE")
+	router.HandleFunc("/iuchat/contacts", h.GetContacts).Methods("GET")
+	router.HandleFunc("/iuchat/users", h.CreateUser).Methods("POST")
+	router.HandleFunc("/iuchat/users/{user_id}", h.GetUserByID).Methods("GET")
+	router.HandleFunc("/iuchat/getidbyusername/{username}", h.GetIdByUsername).Methods("GET")
+	router.HandleFunc("/iuchat/getcurrentuser", h.GetCurrentUser).Methods("GET")
+	router.HandleFunc("/iuchat/users/{user}", h.ChangeUser).Methods("PUT", "OPTION")
+
+}

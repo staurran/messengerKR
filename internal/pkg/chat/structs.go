@@ -10,48 +10,48 @@ type ChatInp struct {
 }
 
 type ChatRepoStruct struct {
-	Id       uint `json:"id"`
-	Name     string
-	Avatar   string
-	CountMes int64 `json:"count_mes"`
+	Id       uint   `json:"id"`
+	Name     string `json:"name"`
+	Avatar   string `json:"avatar"`
+	CountMes int64  `json:"count_mes"`
 }
 
 type ChatStruct struct {
-	Id                  uint `json:"id"`
-	Name                string
-	Avatar              string
-	QuantityUnshownMess int64 `json:"quantityUnshownMess"`
+	Id                  uint   `json:"id"`
+	Name                string `json:"name"`
+	Avatar              string `json:"avatar"`
+	QuantityUnshownMess int64  `json:"quantityUnshownMess"`
 	LastMessage
 }
 
 type LastMessage struct {
-	Username string
-	Content  string
-	Time     time.Time
+	Username string    `json:"username"`
+	Content  string    `json:"content"`
+	Time     time.Time `json:"time"`
 }
 
 type Message struct {
-	ID           uint   `json:"id"`
-	Content      string `json:"content"`
-	UserFrom     string `json:"userFrom"`
-	OriginalUser string `json:"originalUser"`
-	Attachment   []uint
-	Photos       []uint
-	Audio        uint
-	TimeCreated  time.Time
-	Reactions    []ReactionMes
-	Shown        bool
+	ID           uint          `json:"id"`
+	Content      string        `json:"content"`
+	UserFrom     string        `json:"userFrom"`
+	OriginalUser string        `json:"originalUser"`
+	Attachment   []uint        `json:"attachment"`
+	Photos       []uint        `json:"photo"`
+	Audio        uint          `json:"audio"`
+	TimeCreated  time.Time     `json:"timeCreated"`
+	Reactions    []ReactionMes `json:"reactions"`
+	Shown        bool          `json:"shown"`
 }
 
 type ReactionMes struct {
-	Reaction string
-	Quantity int
+	Reaction string `json:"reaction"`
+	Quantity int    `json:"quantity"`
 }
 
 type MessageInp struct {
-	Content    string
-	ChatId     uint
-	Attachment []uint
-	Photos     []uint
-	Audio      uint
+	Content    string `json:"content"`
+	ChatId     uint   `json:"chatId"`
+	Attachment []uint `json:"attachment"`
+	Photos     []uint `json:"photos"`
+	Audio      uint   `json:"audio"`
 }

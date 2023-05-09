@@ -18,7 +18,7 @@ func NewHandler(useCase user.UseCase) *Handler {
 
 func RegisterHTTPEndpoints(router *mux.Router, uc user.UseCase) {
 	h := NewHandler(uc)
-	router.HandleFunc("/iuchat/contacts", h.CreateContact).Methods("POST")
+	router.HandleFunc("/iuchat/contacts/{phone}", h.CreateContact).Methods("POST")
 	router.HandleFunc("/iuchat/contacts/{contact}", h.DeleteContact).Methods("DELETE")
 	router.HandleFunc("/iuchat/contacts", h.GetContacts).Methods("GET")
 	router.HandleFunc("/iuchat/user/{user_id}", h.GetUserByID).Methods("GET")

@@ -100,8 +100,8 @@ func (r *ChatRepository) GetLastMes(chatId uint) (lastMessage structs.LastMessag
 	return lastMessage, nil
 }
 
-func (r *ChatRepository) CreateMessage(message ds.Message) error {
-	err := r.db.Create(&message).Error
+func (r *ChatRepository) CreateMessage(message *ds.Message) error {
+	err := r.db.Create(message).Error
 	return err
 }
 

@@ -58,7 +58,7 @@ func (server Server) UploadFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server Server) GetFile(w http.ResponseWriter, r *http.Request) {
-	// Получаем ID файла из параметра запроса
+	// Получаем Id файла из параметра запроса
 	vars := mux.Vars(r)
 	id := vars["id"]
 

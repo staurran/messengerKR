@@ -9,7 +9,7 @@ func (repository Repository) UploadFile(filePath string, userID uint) (uint, err
 
 	// Проверка, что запись создана
 	if result.Error == nil && result.RowsAffected > 0 {
-		// Получение ID только что созданной записи
+		// Получение Id только что созданной записи
 		return file.ID, nil
 	}
 

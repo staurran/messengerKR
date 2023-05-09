@@ -80,7 +80,7 @@ func (a *Application) CreateChat(gCtx *gin.Context) {
 
 	for _, u := range input.Users {
 		var chatUser ds.ChatUser
-		chatUser.ChatID = chat.ID
+		chatUser.ChatID = chat.Id
 		chatUser.ChatRole = u.Role
 		chatUser.UserID = u.UserId
 		err = a.repo.CreateChatUser(&chatUser)

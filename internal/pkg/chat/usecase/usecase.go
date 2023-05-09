@@ -18,10 +18,10 @@ func (uc *ChatUseCase) CreateChat(chatInp chat.ChatInp, userId uint) (chatId uin
 	}
 
 	var chatUsers []ds.ChatUser
-	admin := ds.ChatUser{UserID: userId, ChatID: chatDB.ID, ChatRole: constProject.ChatAdmin}
+	admin := ds.ChatUser{UserID: userId, ChatID: chatDB.Id, ChatRole: constProject.ChatAdmin}
 	chatUsers = append(chatUsers, admin)
 	for _, user := range chatInp.Users {
-		chatUser := ds.ChatUser{UserID: user, ChatID: chatDB.ID, ChatRole: constProject.ChatUser}
+		chatUser := ds.ChatUser{UserID: user, ChatID: chatDB.Id, ChatRole: constProject.ChatUser}
 		chatUsers = append(chatUsers, chatUser)
 	}
 	err = uc.ChatRepo.SaveChatUsers(chatUsers)
@@ -29,7 +29,7 @@ func (uc *ChatUseCase) CreateChat(chatInp chat.ChatInp, userId uint) (chatId uin
 		return 0, err
 	}
 
-	return chatDB.ID, err
+	return chatDB.Id, err
 }
 
 func (uc *ChatUseCase) DeleteChat(chatId uint, userId uint) error {

@@ -5,7 +5,7 @@ import (
 )
 
 type Chat struct {
-	ID          uint   `sql:"type:uuid;primary_key;default:" json:"chatId" gorm:"primarykey"`
+	Id          uint   `sql:"type:uuid;primary_key;default:" json:"chatId" gorm:"primarykey"`
 	Name        string `json:"chatName"`
 	Avatar      uint   `json:"avatar"`
 	Description string `json:"description"`
@@ -27,39 +27,43 @@ type UserPhoto struct {
 }
 
 type Contact struct {
-	ID        uint `sql:"type:uuid;primary_key;default:" json:"userId" gorm:"primarykey"`
+	Id        uint `sql:"type:uuid;primary_key;default:" json:"userId" gorm:"primarykey"`
 	UserID    uint `json:"userID"`
 	ContactID uint `json:"contactID"`
 }
 
 type ChatUser struct {
-	ID       uint                  `sql:"type:uuid;primary_key;default:" json:"chatUserId" gorm:"primarykey"`
+	Id       uint                  `sql:"type:uuid;primary_key;default:" json:"chatUserId" gorm:"primarykey"`
 	UserID   uint                  `json:"userId"`
 	ChatID   uint                  `json:"chatId"`
 	ChatRole constProject.ChatRole `json:"chatRole"`
 }
 
 type Photo struct {
-	ID        uint   `sql:"type:uuid;primary_key;default:" json:"photoMessId" gorm:"primarykey"`
+	Id        uint   `sql:"type:uuid;primary_key;default:" json:"photoMessId" gorm:"primarykey"`
 	MessageID uint   `json:"messageId"`
 	Photo     string `json:"link"`
 }
 
 type Audio struct {
-	ID        uint   `sql:"type:uuid;primary_key;default:" json:"audioMessId" gorm:"primarykey"`
+	Id        uint   `sql:"type:uuid;primary_key;default:" json:"audioMessId" gorm:"primarykey"`
 	MessageID uint   `json:"messageId"`
 	Audio     string `json:"link"`
 }
 
 type Attachment struct {
-	ID         uint   `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
+	Id         uint   `sql:"type:uuid;primary_key;default:" json:"attachmentMessId" gorm:"primarykey"`
 	MessageID  uint   `json:"messId"`
 	Attachment string `json:"link"`
 }
 
 type Reaction struct {
-	ID        uint   `sql:"type:uuid;primary_key;default:" json:"reactionId" gorm:"primarykey"`
+	Id        uint   `sql:"type:uuid;primary_key;default:" json:"reactionId" gorm:"primarykey"`
 	MessageID uint   `json:"messId"`
 	Name      string `json:"reactionName"`
 	UserID    string `json:"userId"`
+}
+
+type Message struct {
+	Id
 }

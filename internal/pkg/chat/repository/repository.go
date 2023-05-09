@@ -2,10 +2,12 @@ package repository
 
 import (
 	"fmt"
+
+	"gorm.io/gorm"
+
 	"github.com/staurran/messengerKR.git/internal/app/constProject"
 	"github.com/staurran/messengerKR.git/internal/app/ds"
 	"github.com/staurran/messengerKR.git/internal/app/structs"
-	"gorm.io/gorm"
 )
 
 type ChatRepository struct {
@@ -43,7 +45,7 @@ func (r *ChatRepository) GetChats(userId uint) ([]structs.ChatStruct, error) {
 
 func (r *ChatRepository) ChangeChat(chatInp ds.Chat) error {
 	chatDB := &ds.Chat{}
-	err := r.db.First(chatDB, "id = ?", chatInp.ID).Error // find product with code D42
+	err := r.db.First(chatDB, "id = ?", chatInp.Id).Error // find product with code D42
 	if err != nil {
 		return err
 	}

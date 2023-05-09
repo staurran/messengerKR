@@ -14,7 +14,7 @@ type ChatRepository struct {
 	db *gorm.DB
 }
 
-func (r *ChatRepository) CreateChat(chat ds.Chat) error {
+func (r *ChatRepository) CreateChat(chat *ds.Chat) error {
 	err := r.db.Create(&chat).Error
 	return err
 }
@@ -40,9 +40,6 @@ func (r *ChatRepository) GetChats(userID uint, k int) ([]structs.ChatRepoStruct,
 	if err != nil {
 		return nil, err
 	}
-
-	//subQuery := r.db.Model(ds.Message{}).Select("messages.id, messages.context, messages.user_from, messages.chat_id").
-	//	Where("message.chat_id = chat2.id")
 	var chat []structs.ChatRepoStruct
 	err = r.db.Table("chats ch").Select("ch.id, ch.name, ch.avatar, COUNT(m.id) as count_mes").
 		Joins("Join messages m ON m.chat_id = ch.id").

@@ -50,6 +50,7 @@ type ReactionMes struct {
 
 type MessageInp struct {
 	Content    string
+	ChatId     uint
 	Attachment []uint
 	Photos     []uint
 	Audio      uint

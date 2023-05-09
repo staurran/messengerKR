@@ -67,3 +67,7 @@ func (uc *ChatUseCase) GetChats(userId uint) ([]chat.ChatStruct, error) {
 	}
 	return result, nil
 }
+
+func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
+	return nil
+}

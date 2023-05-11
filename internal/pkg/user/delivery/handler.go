@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/fatih/structs"
 	"github.com/gorilla/mux"
 
 	"github.com/staurran/messengerKR.git/utils/logger"
@@ -95,7 +96,30 @@ func (h *Handler) GetContacts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetUserByID(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userIdStr, ok := params["user_id"]
+	if !ok {
+		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		return
+	}
 
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+	userInfo, err := h.useCase.GetUserById(uint(userId))
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	mapInfo := structs.Map(&userInfo)
+	logger.Log(http.StatusOK, "Success", r.Method, r.URL.Path, false)
+	writer.Respond(w, r, mapInfo)
 }
 
 func (h *Handler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
@@ -106,8 +130,15 @@ func (h *Handler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
 		return
 	}
-}
 
-func (h *Handler) ChangeUser(w http.ResponseWriter, r *http.Request) {
+	userInfo, err := h.useCase.GetUserById(uint(userId))
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
 
+	mapInfo := structs.Map(&userInfo)
+	logger.Log(http.StatusOK, "Success", r.Method, r.URL.Path, false)
+	writer.Respond(w, r, mapInfo)
 }

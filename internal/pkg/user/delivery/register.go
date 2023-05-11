@@ -23,6 +23,5 @@ func RegisterHTTPEndpoints(router *mux.Router, uc user.UseCase) {
 	router.HandleFunc("/iuchat/contacts", h.GetContacts).Methods("GET")
 	router.HandleFunc("/iuchat/user/{user_id}", h.GetUserByID).Methods("GET")
 	router.HandleFunc("/iuchat/user", h.GetCurrentUser).Methods("GET")
-	router.HandleFunc("/iuchat/user", h.ChangeUser).Methods("PUT", "OPTION")
 
 }

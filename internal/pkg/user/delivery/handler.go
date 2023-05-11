@@ -34,6 +34,9 @@ func (h *Handler) CreateContact(w http.ResponseWriter, r *http.Request) {
 		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
+
+	logger.Log(http.StatusOK, "Success", r.Method, r.URL.Path, false)
+	writer.Respond(w, r, map[string]interface{}{})
 }
 
 func (h *Handler) DeleteContact(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +69,9 @@ func (h *Handler) DeleteContact(w http.ResponseWriter, r *http.Request) {
 		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
+
+	logger.Log(http.StatusOK, "Success", r.Method, r.URL.Path, false)
+	writer.Respond(w, r, map[string]interface{}{})
 }
 
 func (h *Handler) GetContacts(w http.ResponseWriter, r *http.Request) {
@@ -83,6 +89,9 @@ func (h *Handler) GetContacts(w http.ResponseWriter, r *http.Request) {
 		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
+
+	logger.Log(http.StatusOK, "Success", r.Method, r.URL.Path, false)
+	writer.Respond(w, r, map[string]interface{}{"contacts": contacts})
 }
 
 func (h *Handler) GetUserByID(w http.ResponseWriter, r *http.Request) {

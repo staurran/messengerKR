@@ -21,3 +21,24 @@ func (uc *UserUseCase) CreateContact(userId uint, phone string) error {
 	}
 	return nil
 }
+
+func (uc *UserUseCase) DeleteContact(userId uint, contactId uint) error {
+	err := uc.UserRepo.DeleteContact(userId, contactId)
+	return err
+}
+
+func (uc *UserUseCase) GetContacts(userId uint) ([]user.Contact, error) {
+	contacts, err := uc.UserRepo.GetAllContacts(userId)
+	if err != nil {
+		return nil, err
+	}
+	return contacts, nil
+}
+
+func (uc *UserUseCase) GetUserById(userId uint) (user.UserInfo, error) {
+	userInfo, err := uc.UserRepo.GetUserById(userId)
+	if err != nil {
+		return user.UserInfo{}, err
+	}
+	return userInfo, nil
+}

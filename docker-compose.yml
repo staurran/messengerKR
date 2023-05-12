@@ -20,19 +20,6 @@ services: # имеджи, которые запустятся по вашему 
     command: redis-server --save 20 1 --loglevel warning --requirepass password
     volumes:
       - redis-data:/data
-  db-storage:
-    image: postgres:latest
-    volumes:
-      - type: volume
-        source: postgresstore-data
-        target: /var/lib/postgresql/data
-
-    environment:
-      POSTGRES_DB: "bmstu_storage"
-      POSTGRES_USER: "bmstu_user"
-      POSTGRES_PASSWORD: "bmstu_password"
-    ports:
-      - "5433:5432"
   db-chat:
     image: postgres:latest
     volumes:
@@ -51,8 +38,6 @@ volumes: # часть настроек для хранения данных
   postgresdb-data:
     driver: local
   redis-data:
-    driver: local
-  postgresstore-data:
     driver: local
   postgreschat-data:
     driver: local

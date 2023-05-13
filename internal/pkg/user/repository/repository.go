@@ -31,7 +31,6 @@ func (r *UserRepository) GetUserByID(id uint) (*ds.User, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return user, nil
 }
 
@@ -75,4 +74,13 @@ func (r *UserRepository) DeleteContact(userId, contactId uint) error {
 	}
 	err = r.db.Delete(contact).Error
 	return err
+}
+
+func (r *UserRepository) GetIdByPhone(phone string) (uint, error) {
+	user := &ds.User{}
+	err := r.db.First(user, "phone = ?", phone).Error
+	if err != nil {
+		return 0, err
+	}
+	return user.Id, nil
 }

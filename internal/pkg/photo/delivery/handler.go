@@ -40,8 +40,9 @@ func (h *Handler) AddPhoto(w http.ResponseWriter, r *http.Request) {
 	userIdDB := r.Context().Value("userId")
 	userId, ok := userIdDB.(uint32)
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err = fmt.Errorf("cant get userId")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
@@ -93,8 +94,9 @@ func (h *Handler) GetPhoto(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	photoId, ok := params["photo"]
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err := fmt.Errorf("no photo")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
@@ -117,8 +119,9 @@ func (h *Handler) DeletePhoto(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	photoIdStr, ok := params["photo"]
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err := fmt.Errorf("no photo")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 	photoId, err := strconv.Atoi(photoIdStr)
@@ -130,8 +133,9 @@ func (h *Handler) DeletePhoto(w http.ResponseWriter, r *http.Request) {
 	userIdDB := r.Context().Value("userId")
 	userId, ok := userIdDB.(uint32)
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err = fmt.Errorf("cant get userId")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
@@ -170,8 +174,9 @@ func (h *Handler) ChangePhoto(w http.ResponseWriter, r *http.Request) {
 	userIdDB := r.Context().Value("userId")
 	userId, ok := userIdDB.(uint32)
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err = fmt.Errorf("cant get userId")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 

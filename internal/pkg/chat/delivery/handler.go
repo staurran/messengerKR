@@ -64,8 +64,9 @@ func (h *Handler) DeleteChat(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	chatIdStr, ok := params["chat"]
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err := fmt.Errorf("no chat")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
@@ -79,8 +80,9 @@ func (h *Handler) DeleteChat(w http.ResponseWriter, r *http.Request) {
 	userIdDB := r.Context().Value("userId")
 	userId, ok := userIdDB.(uint32)
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err = fmt.Errorf("cant get userId")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
@@ -101,8 +103,9 @@ func (h *Handler) ChangeChat(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	chatIdStr, ok := params["chat"]
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err := fmt.Errorf("no chat")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
@@ -116,8 +119,9 @@ func (h *Handler) ChangeChat(w http.ResponseWriter, r *http.Request) {
 	userIdDB := r.Context().Value("userId")
 	userId, ok := userIdDB.(uint32)
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err = fmt.Errorf("cant get userId")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
@@ -162,8 +166,9 @@ func (h *Handler) GetChats(w http.ResponseWriter, r *http.Request) {
 	userIdDB := r.Context().Value("userId")
 	userId, ok := userIdDB.(uint32)
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err := fmt.Errorf("cant get userId")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
@@ -183,16 +188,18 @@ func (h *Handler) GetMessages(w http.ResponseWriter, r *http.Request) {
 	userIdDB := r.Context().Value("userId")
 	userId, ok := userIdDB.(uint32)
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err := fmt.Errorf("cant get userId")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
 	params := mux.Vars(r)
 	chatIdStr, ok := params["chat"]
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err := fmt.Errorf("no chat")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 
@@ -218,8 +225,9 @@ func (h *Handler) SendMessage(w http.ResponseWriter, r *http.Request) {
 	userIdDB := r.Context().Value("userId")
 	userId, ok := userIdDB.(uint32)
 	if !ok {
-		logger.Log(http.StatusBadRequest, "", r.Method, r.URL.Path, true)
-		writer.ErrorRespond(w, r, nil, http.StatusBadRequest)
+		err := fmt.Errorf("cant get userId")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
 

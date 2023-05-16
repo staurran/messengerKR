@@ -43,9 +43,6 @@ func (r *UserRepository) ChangeUser(userInp ds.User) error {
 	if userInp.Username != "" {
 		userDB.Username = userInp.Username
 	}
-	if userInp.Avatar != "" {
-		userDB.Avatar = userInp.Avatar
-	}
 	if userInp.Bio != "" {
 		userDB.Bio = userInp.Bio
 	}

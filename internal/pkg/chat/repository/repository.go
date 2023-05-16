@@ -63,7 +63,7 @@ func (r *ChatRepository) ChangeChat(chatInp ds.Chat) error {
 	if chatInp.Name != "" {
 		chatDB.Name = chatInp.Name
 	}
-	if chatInp.Avatar != "" {
+	if chatInp.Avatar != 0 {
 		chatDB.Avatar = chatInp.Avatar
 	}
 	if chatInp.Description != "" {

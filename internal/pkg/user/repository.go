@@ -6,6 +6,6 @@ type IUserRepository interface {
 	GetUserIdByPhone(phone string) (uint, error)
 	CreateContact(contact ds.Contact) error
 	DeleteContact(userId, contactId uint) error
-	GetAllContacts(userId uint) ([]Contact, error)
+	GetContacts(userId uint) ([]Contact, error)
 	GetUserById(userId uint) (UserInfo, error)
 }

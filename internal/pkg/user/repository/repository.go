@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/staurran/messengerKR.git/internal/app/ds"
+	"github.com/staurran/messengerKR.git/internal/pkg/user"
 )
 
 type UserRepository struct {
@@ -31,7 +32,7 @@ func (r *UserRepository) Login(user *ds.User) error {
 	return nil
 }
 
-func (r *UserRepository) GetUserByID(id uint) (*ds.User, error) {
+func (r *UserRepository) GetUserById(id uint) (user.UserInfo, error) {
 	user := &ds.User{}
 	err := r.db.First(user, "id = ?", id).Error
 	if err != nil {
@@ -59,7 +60,7 @@ func (r *UserRepository) ChangeUser(userInp ds.User) error {
 	return err
 }
 
-func (r *UserRepository) GetContacts(userId uint) (contacts []ds.User, err error) {
+func (r *UserRepository) GetContacts(userId uint) (contacts []user.Contact, err error) {
 	err = r.db.Find(&contacts, "user_id = ?", userId).Error
 	return
 }
@@ -79,7 +80,7 @@ func (r *UserRepository) DeleteContact(userId, contactId uint) error {
 	return err
 }
 
-func (r *UserRepository) GetIdByPhone(phone string) (uint, error) {
+func (r *UserRepository) GetUserIdByPhone(phone string) (uint, error) {
 	user := &ds.User{}
 	err := r.db.First(user, "phone = ?", phone).Error
 	if err != nil {

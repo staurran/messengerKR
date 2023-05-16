@@ -135,5 +135,10 @@ func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
 }
 
 func (uc *ChatUseCase) GetMessages(userId uint, chatId uint) ([]chat.Message, error) {
+	messages, err := uc.ChatRepo.GetMessages(userId, chatId)
+	if err != nil {
+		return nil, err
+	}
 
+	return messages, nil
 }

@@ -51,7 +51,7 @@ func (s *GRPCServer) Register(ctx context.Context, req *auth.UserRegisterInfo) (
 
 func (s *GRPCServer) Login(ctx context.Context, req *auth.UserLoginInfo) (*auth.UserResponse, error) {
 	if req.Phone == "" {
-		err := fmt.Errorf("email is empty")
+		err := fmt.Errorf("phone is empty")
 		return nil, err
 	}
 

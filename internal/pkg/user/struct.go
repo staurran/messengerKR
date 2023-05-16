@@ -1,9 +1,9 @@
 package user
 
 type Contact struct {
-	ContactId uint
-	UserId    uint
-	Avatar    string
-	Name      string
-	Phone     string
+	ContactId uint   `json:"contactId"`
+	UserId    uint   `json:"userId"`
+	Avatar    string `json:"avatar"`
+	Username  string `json:"username"`
+	Phone     string `json:"phone"`
 }

@@ -21,7 +21,7 @@ func NewChatUseCase(
 }
 
 func (uc *ChatUseCase) CreateChat(chatInp chat.ChatInp, userId uint) (chatId uint, err error) {
-	chatDB := ds.Chat{Name: chatInp.Name, Description: chatInp.Description, Avatar: 0}
+	chatDB := ds.Chat{Name: chatInp.Name, Description: chatInp.Description, Avatar: chatInp.Avatar}
 	err = uc.ChatRepo.CreateChat(&chatDB)
 	if err != nil {
 		return 0, err
@@ -44,7 +44,21 @@ func (uc *ChatUseCase) CreateChat(chatInp chat.ChatInp, userId uint) (chatId uin
 
 func (uc *ChatUseCase) DeleteChat(chatId uint, userId uint) error {
 	chatUser := ds.ChatUser{UserID: userId, ChatID: chatId}
-	err := uc.ChatRepo.DeleteChatUser(chatUser)
+	err := uc.ChatRepo.CheckAdmin(userId, chatId)
+	if err != nil && err.Error() != "user is not an admin" {
+		return err
+	}
+	flagNewAdmin := false
+	if err == nil {
+		flagNewAdmin = true
+	}
+	err = uc.ChatRepo.DeleteChatUser(&chatUser)
+	if flagNewAdmin {
+		err2 := uc.ChatRepo.ChangeChatUserAdmin(chatUser.ChatID)
+		if err2 != nil {
+			return err2
+		}
+	}
 	return err
 }
 
@@ -53,10 +67,43 @@ func (uc *ChatUseCase) ChangeChat(chatId uint, userId uint, chat chat.ChatInp) e
 	if err != nil {
 		return err
 	}
-
-	NewChat := ds.Chat{Name: chat.Name, Description: chat.Description}
+	NewChat := ds.Chat{Name: chat.Name, Description: chat.Description, Id: chatId}
 	err = uc.ChatRepo.ChangeChat(NewChat)
-	return err
+	if err != nil {
+		return err
+	}
+	chatDB, err := uc.ChatRepo.GetChat(chatId)
+	if err != nil {
+		return err
+	}
+	chatUsers, err := uc.ChatRepo.GetChatUsers(chatId)
+	if err != nil {
+		return err
+	}
+	chatDB.Users = chatUsers
+	var addUsers []ds.ChatUser
+	for _, u := range chat.Users {
+		if !contains(chatDB.Users, u) {
+			addUsers = append(addUsers, ds.ChatUser{UserID: u, ChatID: chatId, ChatRole: constProject.ChatUser})
+		}
+	}
+	if len(addUsers) > 0 {
+		err = uc.ChatRepo.SaveChatUsers(addUsers)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, u := range chatDB.Users {
+		if !contains(chat.Users, u) {
+			err = uc.DeleteChat(chatId, u)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func (uc *ChatUseCase) GetChats(userId uint) ([]chat.ChatStruct, error) {
@@ -141,4 +188,13 @@ func (uc *ChatUseCase) GetMessages(userId uint, chatId uint) ([]chat.Message, er
 	}
 
 	return messages, nil
+}
+
+func contains(sliceUint []uint, elem uint) bool {
+	for _, i := range sliceUint {
+		if i == elem {
+			return true
+		}
+	}
+	return false
 }

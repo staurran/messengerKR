@@ -35,7 +35,6 @@ func (h *Handler) CreateChat(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(reqBody, &userJson)
 	if err != nil {
 		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
-		err = fmt.Errorf("cant parse json")
 		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}
@@ -153,7 +152,6 @@ func (h *Handler) ChangeChat(w http.ResponseWriter, r *http.Request) {
 	err = h.useCase.ChangeChat(uint(chatId), uint(userId), userJson)
 	if err != nil {
 		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
-		err = fmt.Errorf("cant parse json")
 		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}

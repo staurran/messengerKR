@@ -47,7 +47,7 @@ func (r *UserRepository) ChangeUser(userInp ds.User) error {
 
 func (r *UserRepository) GetContacts(userId uint) (contacts []user.Contact, err error) {
 	err = r.db.Table("contacts c").
-		Select("c.contact_id as user_id, u.name, u.phone, u.avatar as photo").
+		Select("c.contact_id as user_id, u.username, u.phone, u.avatar").
 		Where("c.user_id=?", userId).
 		Joins("Join users u on u.id=c.contact_id").Find(&contacts).Error
 	return
@@ -60,7 +60,7 @@ func (r *UserRepository) CreateContact(contact ds.Contact) error {
 
 func (r *UserRepository) DeleteContact(userId, contactId uint) error {
 	contact := &ds.Contact{}
-	err := r.db.First(contact, "user_id = ? contact_id = ?", userId, contactId).Error
+	err := r.db.First(contact, "user_id = ? AND contact_id = ?", userId, contactId).Error
 	if err != nil {
 		return err
 	}

@@ -5,7 +5,7 @@ import "github.com/staurran/messengerKR.git/internal/app/ds"
 type IRepositoryChat interface {
 	CreateChat(chat *ds.Chat) error
 	SaveChatUsers(user []ds.ChatUser) error
-	DeleteChatUser(user ds.ChatUser) error
+	DeleteChatUser(user *ds.ChatUser) error
 	CheckAdmin(userId, chatId uint) error
 	ChangeChat(chat ds.Chat) error
 	GetChats(userId uint) ([]ChatRepoStruct, error)
@@ -17,4 +17,6 @@ type IRepositoryChat interface {
 	SavePhoto(photo []ds.Photo) error
 	SaveAudio(audio ds.Audio) error
 	GetMessages(userId, chatId uint) ([]Message, error)
+	ChangeChatUserAdmin(chatId uint) error
+	GetChat(chatId uint) (ChatInp, error)
 }

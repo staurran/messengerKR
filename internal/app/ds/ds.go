@@ -9,7 +9,7 @@ import (
 type Chat struct {
 	Id          uint   `sql:"type:uuid;primary_key;default:" json:"chatId" gorm:"primarykey"`
 	Name        string `json:"chatName"`
-	Avatar      uint   `json:"avatar"`
+	Avatar      string `json:"avatar"`
 	Description string `json:"description"`
 }
 

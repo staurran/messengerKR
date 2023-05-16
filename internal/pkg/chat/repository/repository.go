@@ -30,9 +30,9 @@ func (r *ChatRepository) SaveChatUsers(user []ds.ChatUser) error {
 	return err
 }
 
-func (r *ChatRepository) DeleteChatUser(user ds.ChatUser) error {
+func (r *ChatRepository) DeleteChatUser(user *ds.ChatUser) error {
 
-	err := r.db.First(&user, "user_id =? AND chat_id =?", user.UserID, user.ChatID).Error
+	err := r.db.First(user, "user_id =? AND chat_id =?", user.UserID, user.ChatID).Error
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (r *ChatRepository) GetChats(userID uint) ([]chat.ChatRepoStruct, error) {
 	}
 	var chat []chat.ChatRepoStruct
 	err = r.db.Table("chats ch").Select("ch.id, ch.name, ch.avatar, COUNT(m.id) as count_mes").
-		Joins("Join messages m ON m.chat_id = ch.id").
+		Joins("Left Join messages m ON m.chat_id = ch.id").
 		Where("ch.id IN ?", chatId).
 		Order("COUNT(m.id)").
 		Group("ch.id, ch.name, ch.avatar").
@@ -69,7 +69,7 @@ func (r *ChatRepository) ChangeChat(chatInp ds.Chat) error {
 	if chatInp.Name != "" {
 		chatDB.Name = chatInp.Name
 	}
-	if chatInp.Avatar != 0 {
+	if chatInp.Avatar != "" {
 		chatDB.Avatar = chatInp.Avatar
 	}
 	if chatInp.Description != "" {
@@ -115,7 +115,7 @@ func (r *ChatRepository) CreateMesUserShown(msg []ds.Shown) error {
 
 func (r *ChatRepository) GetChatUsers(chatId uint) ([]uint, error) {
 	var chatusers []uint
-	err := r.db.Table("chatusers").Select("user_id").
+	err := r.db.Table("chat_users").Select("user_id").
 		Find(&chatusers, "chat_id = ?", chatId).Error
 	return chatusers, err
 }
@@ -145,4 +145,26 @@ func (r *ChatRepository) GetMessages(userId, chatId uint) ([]chat.Message, error
 		Where("user_id = ? AND chat_id = ?", userId, chatId).
 		Order("m.id ASC").Find(&messages).Error
 	return messages, err
+}
+
+func (r *ChatRepository) ChangeChatUserAdmin(chatId uint) error {
+	var randUser ds.ChatUser
+	err := r.db.First(&randUser, "chat_id =?", chatId).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil
+		}
+		return err
+	}
+
+	randUser.ChatRole = constProject.ChatAdmin
+	err = r.db.Save(&randUser).Error
+	return err
+}
+
+func (r *ChatRepository) GetChat(chatId uint) (chat.ChatInp, error) {
+	var chatDB chat.ChatInp
+	err := r.db.Table("chats c").Select("c.name, c.description, c.avatar, ").
+		Where("c.id=?", chatId).Error
+	return chatDB, err
 }

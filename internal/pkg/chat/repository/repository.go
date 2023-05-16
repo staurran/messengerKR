@@ -14,6 +14,12 @@ type ChatRepository struct {
 	db *gorm.DB
 }
 
+func NewChatRepo(db *gorm.DB) *ChatRepository {
+
+	r := ChatRepository{db}
+	return &r
+}
+
 func (r *ChatRepository) CreateChat(chat *ds.Chat) error {
 	err := r.db.Create(&chat).Error
 	return err

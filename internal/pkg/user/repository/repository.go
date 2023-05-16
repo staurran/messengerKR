@@ -11,6 +11,12 @@ type UserRepository struct {
 	db *gorm.DB
 }
 
+func NewUserRepo(db *gorm.DB) *UserRepository {
+
+	r := UserRepository{db}
+	return &r
+}
+
 func (r *UserRepository) Login(user *ds.User) error {
 	user_db := ds.User{}
 	err := r.db.Model(&ds.User{}).Where("username = ?", user.Username).Take(&user_db).Error

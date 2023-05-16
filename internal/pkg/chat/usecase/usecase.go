@@ -9,7 +9,15 @@ import (
 )
 
 type ChatUseCase struct {
-	ChatRepo chat.IRepositoryPhoto
+	ChatRepo chat.IRepositoryChat
+}
+
+func NewChatUseCase(
+	chatRepo chat.IRepositoryChat,
+) *ChatUseCase {
+	return &ChatUseCase{
+		ChatRepo: chatRepo,
+	}
 }
 
 func (uc *ChatUseCase) CreateChat(chatInp chat.ChatInp, userId uint) (chatId uint, err error) {

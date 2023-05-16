@@ -7,11 +7,18 @@ import (
 
 	"github.com/staurran/messengerKR.git/internal/app/middlewares"
 	authDel "github.com/staurran/messengerKR.git/internal/pkg/auth/delivery"
-	ChatServerPackage "github.com/staurran/messengerKR.git/internal/pkg/chat2/pkg/server"
 	photoDel "github.com/staurran/messengerKR.git/internal/pkg/photo/delivery"
 	PhotoRepository "github.com/staurran/messengerKR.git/internal/pkg/photo/repository"
 	photoUC "github.com/staurran/messengerKR.git/internal/pkg/photo/usecase"
 	"github.com/staurran/messengerKR.git/service/proto/authProto"
+
+	chatDel "github.com/staurran/messengerKR.git/internal/pkg/chat/delivery"
+	ChatRepository "github.com/staurran/messengerKR.git/internal/pkg/chat/repository"
+	chatUC "github.com/staurran/messengerKR.git/internal/pkg/chat/usecase"
+
+	userDel "github.com/staurran/messengerKR.git/internal/pkg/user/delivery"
+	UserRepository "github.com/staurran/messengerKR.git/internal/pkg/user/repository"
+	userUC "github.com/staurran/messengerKR.git/internal/pkg/user/usecase"
 )
 
 var frontendHosts = []string{
@@ -46,14 +53,15 @@ func (a *Application) InitRoutes(db *gorm.DB, authServ authProto.AuthClient) {
 	ucPhoto := photoUC.NewPhotoUseCase(photoRepo)
 	photoDel.RegisterHTTPEndpoints(a.Router, ucPhoto)
 
-	authDel.RegisterHTTPEndpoints(a.Router, authServ)
+	chatRepo := ChatRepository.NewChatRepo(db)
+	ucChat := chatUC.NewChatUseCase(chatRepo)
+	chatDel.RegisterHTTPEndpoints(a.Router, ucChat)
 
-	chatServerOptions := ChatServerPackage.ServerOptions{
-		Addr:       "localhost",
-		Port:       3030,
-		PathPrefix: "/iuchat/chats",
-	}
-	chatRouter := ChatServerPackage.InitServer(chatServerOptions)
+	userRepo := UserRepository.NewUserRepo(db)
+	ucUser := userUC.NewUserUseCase(userRepo)
+	userDel.RegisterHTTPEndpoints(a.Router, ucUser)
+
+	authDel.RegisterHTTPEndpoints(a.Router, authServ)
 
 	a.Router.PathPrefix(chatServerOptions.PathPrefix).Handler(chatRouter)
 }

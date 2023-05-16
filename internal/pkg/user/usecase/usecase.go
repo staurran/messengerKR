@@ -9,6 +9,14 @@ type UserUseCase struct {
 	UserRepo user.IUserRepository
 }
 
+func NewUserUseCase(
+	userRepo user.IUserRepository,
+) *UserUseCase {
+	return &UserUseCase{
+		UserRepo: userRepo,
+	}
+}
+
 func (uc *UserUseCase) CreateContact(userId uint, phone string) error {
 	contactId, err := uc.UserRepo.GetUserIdByPhone(phone)
 	if err != nil {
@@ -28,7 +36,7 @@ func (uc *UserUseCase) DeleteContact(userId uint, contactId uint) error {
 }
 
 func (uc *UserUseCase) GetContacts(userId uint) ([]user.Contact, error) {
-	contacts, err := uc.UserRepo.GetAllContacts(userId)
+	contacts, err := uc.UserRepo.GetContacts(userId)
 	if err != nil {
 		return nil, err
 	}

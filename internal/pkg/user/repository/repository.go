@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 
 	"github.com/staurran/messengerKR.git/internal/app/ds"
@@ -16,20 +15,6 @@ func NewUserRepo(db *gorm.DB) *UserRepository {
 
 	r := UserRepository{db}
 	return &r
-}
-
-func (r *UserRepository) Login(user *ds.User) error {
-	user_db := ds.User{}
-	err := r.db.Model(&ds.User{}).Where("username = ?", user.Username).Take(&user_db).Error
-	if err != nil {
-		return err
-	}
-	err = bcrypt.CompareHashAndPassword([]byte(user_db.Password), []byte(user.Password))
-	if err != nil {
-		return err
-	}
-	user.Id = user_db.Id
-	return nil
 }
 
 func (r *UserRepository) GetUserById(id uint) (user.UserInfo, error) {
@@ -61,12 +46,15 @@ func (r *UserRepository) ChangeUser(userInp ds.User) error {
 }
 
 func (r *UserRepository) GetContacts(userId uint) (contacts []user.Contact, err error) {
-	err = r.db.Find(&contacts, "user_id = ?", userId).Error
+	err = r.db.Table("contacts c").
+		Select("c.contact_id as user_id, u.name, u.phone, u.avatar as photo").
+		Where("c.user_id=?", userId).
+		Joins("Join users u on u.id=c.contact_id").Find(&contacts).Error
 	return
 }
 
 func (r *UserRepository) CreateContact(contact ds.Contact) error {
-	err := r.db.Create(contact).Error
+	err := r.db.Create(&contact).Error
 	return err
 }
 

@@ -22,8 +22,8 @@ func (uc *UserUseCase) CreateContact(userId uint, phone string) error {
 	if err != nil {
 		return err
 	}
-	contectRow := ds.Contact{UserID: userId, ContactID: contactId}
-	err = uc.UserRepo.CreateContact(contectRow)
+	contactRow := ds.Contact{UserID: userId, ContactID: contactId}
+	err = uc.UserRepo.CreateContact(contactRow)
 	if err != nil {
 		return err
 	}

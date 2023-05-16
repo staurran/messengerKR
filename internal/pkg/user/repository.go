@@ -7,5 +7,5 @@ type IUserRepository interface {
 	CreateContact(contact ds.Contact) error
 	DeleteContact(userId, contactId uint) error
 	GetContacts(userId uint) ([]Contact, error)
-	GetUserById(userId uint) (UserInfo, error)
+	GetUserById(userId uint) (ds.User, error)
 }

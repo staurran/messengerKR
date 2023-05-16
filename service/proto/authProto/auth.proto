@@ -15,20 +15,18 @@ service Auth{
 message UserRegisterInfo{
   string phone=1;
   string password=2;
-  string birthday=3;
-  string username=4;
-  string bio=5;
-  string photo=6;
+  string username=3;
+  string bio=4;
+  string photo=5;
 }
 
 message UserChangeInfo{
   uint32 userId=1;
   string phone=2;
   string password=3;
-  string birthday=4;
-  string username=5;
-  string bio=6;
-  string photo=7;
+  string username=4;
+  string bio=5;
+  string photo=6;
 }
 
 message UserLoginInfo{

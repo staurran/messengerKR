@@ -137,7 +137,11 @@ func (r *ChatRepository) SaveAudio(audio ds.Audio) error {
 
 func (r *ChatRepository) GetMessages(userId, chatId uint) ([]chat.Message, error) {
 	var messages []chat.Message
-	err := r.db.Table("messages m").Select().
+	err := r.db.Table("messages m").
+		Select("m.id, m.content, m.user_from_id, m.original_user_id, m.time_created").
+		Joins("Left Join audios a on a.message_id=m.id").
+		Joins("left Join photos p on p.message_id = m.id").
+		Joins("left Join attachments att on att.message_id = m.id").
 		Where("user_id = ? AND chat_id = ?", userId, chatId).
 		Order("m.id ASC").Find(&messages).Error
 	return messages, err

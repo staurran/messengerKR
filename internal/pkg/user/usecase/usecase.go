@@ -43,10 +43,10 @@ func (uc *UserUseCase) GetContacts(userId uint) ([]user.Contact, error) {
 	return contacts, nil
 }
 
-func (uc *UserUseCase) GetUserById(userId uint) (user.UserInfo, error) {
+func (uc *UserUseCase) GetUserById(userId uint) (ds.User, error) {
 	userInfo, err := uc.UserRepo.GetUserById(userId)
 	if err != nil {
-		return user.UserInfo{}, err
+		return ds.User{}, err
 	}
 	return userInfo, nil
 }

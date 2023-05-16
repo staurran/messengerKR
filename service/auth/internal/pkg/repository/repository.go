@@ -24,7 +24,7 @@ func NewRepo(db *gorm.DB, client *redis.Client) *AuthRepository {
 
 func (r *AuthRepository) Login(email string, passwordInp string) (uint, error) {
 	var userDB *dataStruct.User
-	err := r.db.Model(&dataStruct.User{}).Where("email = ?", email).Take(&userDB).Error
+	err := r.db.Model(&dataStruct.User{}).Where("phone = ?", email).Take(&userDB).Error
 	if err != nil {
 		return 0, err
 	}
@@ -38,10 +38,6 @@ func (r *AuthRepository) Login(email string, passwordInp string) (uint, error) {
 }
 
 func (r *AuthRepository) AddUser(user *dataStruct.User) (uint, error) {
-	if err := r.CheckBirthDay(user.BirthDay); err != nil {
-		return 0, err
-	}
-
 	err := r.db.Create(user).Error
 	return user.Id, err
 }
@@ -54,12 +50,6 @@ func (r *AuthRepository) ChangeUser(user dataStruct.User) error {
 	}
 	if user.Phone != "" {
 		userDb.Phone = user.Phone
-	}
-	if user.BirthDay != "" {
-		if err = r.CheckBirthDay(user.BirthDay); err != nil {
-			return err
-		}
-		userDb.BirthDay = user.BirthDay
 	}
 	if user.Password != "" {
 		userDb.Password = user.Password

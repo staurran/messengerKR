@@ -17,11 +17,11 @@ func NewUserRepo(db *gorm.DB) *UserRepository {
 	return &r
 }
 
-func (r *UserRepository) GetUserById(id uint) (user.UserInfo, error) {
-	user := &ds.User{}
-	err := r.db.First(user, "id = ?", id).Error
+func (r *UserRepository) GetUserById(id uint) (ds.User, error) {
+	user := ds.User{}
+	err := r.db.First(&user, "id = ?", id).Error
 	if err != nil {
-		return nil, err
+		return ds.User{}, err
 	}
 	return user, nil
 }

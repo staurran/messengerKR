@@ -19,4 +19,6 @@ type IRepositoryChat interface {
 	GetMessages(userId, chatId uint) ([]Message, error)
 	ChangeChatUserAdmin(chatId uint) error
 	GetChat(chatId uint) (ChatInp, error)
+	GetAttachments(messId uint) ([]string, error)
+	GetPhotos(messId uint) ([]string, error)
 }

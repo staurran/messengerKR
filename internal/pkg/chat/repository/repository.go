@@ -138,12 +138,12 @@ func (r *ChatRepository) SaveAudio(audio ds.Audio) error {
 func (r *ChatRepository) GetMessages(userId, chatId uint) ([]chat.Message, error) {
 	var messages []chat.Message
 	err := r.db.Table("messages m").
-		Select("m.id, m.content, m.user_from_id, m.original_user_id, m.time_created").
+		Select("m.id, m.content, m.user_id, m.time, a.audio, s.shown").
 		Joins("Left Join audios a on a.message_id=m.id").
-		Joins("left Join photos p on p.message_id = m.id").
-		Joins("left Join attachments att on att.message_id = m.id").
-		Where("user_id = ? AND chat_id = ?", userId, chatId).
-		Order("m.id ASC").Find(&messages).Error
+		Joins("Join showns s on s.message_id=m.id").
+		Where("s.user_id = ?", userId).
+		Where("m.chat_id = ?", chatId).
+		Find(&messages).Error
 	return messages, err
 }
 
@@ -167,4 +167,16 @@ func (r *ChatRepository) GetChat(chatId uint) (chat.ChatInp, error) {
 	err := r.db.Table("chats c").Select("c.name, c.description, c.avatar, ").
 		Where("c.id=?", chatId).Error
 	return chatDB, err
+}
+
+func (r *ChatRepository) GetAttachments(messId uint) ([]string, error) {
+	var attachments []string
+	err := r.db.Table("attachments").Select("attachment").Where("message_id = ?", messId).Find(&attachments).Error
+	return attachments, err
+}
+
+func (r *ChatRepository) GetPhotos(messId uint) ([]string, error) {
+	var photos []string
+	err := r.db.Table("photos").Select("photo").Where("message_id = ?", messId).Find(&photos).Error
+	return photos, err
 }

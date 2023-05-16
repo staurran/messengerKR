@@ -151,9 +151,11 @@ func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
 		attachRow := ds.Attachment{MessageID: msg.Id, Attachment: attachment}
 		attachmentSlice = append(attachmentSlice, attachRow)
 	}
-	err = uc.ChatRepo.SaveAttachments(attachmentSlice)
-	if err != nil {
-		return err
+	if len(attachmentSlice) > 0 {
+		err = uc.ChatRepo.SaveAttachments(attachmentSlice)
+		if err != nil {
+			return err
+		}
 	}
 
 	var photoSlice []ds.Photo
@@ -161,21 +163,23 @@ func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
 		photoRow := ds.Photo{MessageID: msg.Id, Photo: photo}
 		photoSlice = append(photoSlice, photoRow)
 	}
-	err = uc.ChatRepo.SaveAttachments(attachmentSlice)
-	if err != nil {
-		return err
+	if len(photoSlice) > 0 {
+		err = uc.ChatRepo.SavePhoto(photoSlice)
+		if err != nil {
+			return err
+		}
 	}
+
 	var audio ds.Audio
 	if inp.Audio != "" {
 		audio = ds.Audio{
 			Audio:     inp.Audio,
 			MessageID: msg.Id,
 		}
-	}
-
-	err = uc.ChatRepo.SaveAudio(audio)
-	if err != nil {
-		return err
+		err = uc.ChatRepo.SaveAudio(audio)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -185,6 +189,19 @@ func (uc *ChatUseCase) GetMessages(userId uint, chatId uint) ([]chat.Message, er
 	messages, err := uc.ChatRepo.GetMessages(userId, chatId)
 	if err != nil {
 		return nil, err
+	}
+	for i, m := range messages {
+		attachments, err := uc.ChatRepo.GetAttachments(m.ID)
+		if err != nil {
+			return nil, err
+		}
+		messages[i].Attachment = attachments
+
+		photos, err := uc.ChatRepo.GetPhotos(m.ID)
+		if err != nil {
+			return nil, err
+		}
+		messages[i].Photos = photos
 	}
 
 	return messages, nil

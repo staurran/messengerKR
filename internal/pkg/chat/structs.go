@@ -31,16 +31,15 @@ type LastMessage struct {
 }
 
 type Message struct {
-	ID           uint          `json:"id"`
-	Content      string        `json:"content"`
-	UserFrom     string        `json:"userFrom"`
-	OriginalUser string        `json:"originalUser"`
-	Attachment   []string      `json:"attachment"`
-	Photos       []string      `json:"photo"`
-	Audio        string        `json:"audio"`
-	TimeCreated  time.Time     `json:"timeCreated"`
-	Reactions    []ReactionMes `json:"reactions"`
-	Shown        bool          `json:"shown"`
+	ID          uint          `json:"id"`
+	Content     string        `json:"content"`
+	UserId      uint          `json:"user_from"`
+	Attachment  []string      `json:"attachment"`
+	Photos      []string      `json:"photo"`
+	Audio       string        `json:"audio"`
+	TimeCreated time.Time     `json:"timeCreated"`
+	Reactions   []ReactionMes `json:"reactions"`
+	Shown       bool          `json:"shown"`
 }
 
 type ReactionMes struct {

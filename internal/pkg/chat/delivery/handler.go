@@ -257,7 +257,6 @@ func (h *Handler) SendMessage(w http.ResponseWriter, r *http.Request) {
 	err = h.useCase.CreateMessage(uint(userId), userJson)
 	if err != nil {
 		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
-		err = fmt.Errorf("cant parse json")
 		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
 		return
 	}

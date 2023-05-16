@@ -7,7 +7,7 @@ import (
 
 	"github.com/staurran/messengerKR.git/internal/app/constProject"
 	"github.com/staurran/messengerKR.git/internal/app/ds"
-	"github.com/staurran/messengerKR.git/internal/app/structs"
+	"github.com/staurran/messengerKR.git/internal/pkg/chat"
 )
 
 type ChatRepository struct {
@@ -25,7 +25,7 @@ func (r *ChatRepository) CreateChat(chat *ds.Chat) error {
 	return err
 }
 
-func (r *ChatRepository) SaveChatUser(user ds.ChatUser) error {
+func (r *ChatRepository) SaveChatUsers(user []ds.ChatUser) error {
 	err := r.db.Create(&user).Error
 	return err
 }
@@ -40,13 +40,13 @@ func (r *ChatRepository) DeleteChatUser(user ds.ChatUser) error {
 	return err
 }
 
-func (r *ChatRepository) GetChats(userID uint, k int) ([]structs.ChatRepoStruct, error) {
+func (r *ChatRepository) GetChats(userID uint) ([]chat.ChatRepoStruct, error) {
 	var chatId []uint
 	err := r.db.Table("chat_users").Select("chat_id").Find(&chatId, "user_id = ?", userID).Error
 	if err != nil {
 		return nil, err
 	}
-	var chat []structs.ChatRepoStruct
+	var chat []chat.ChatRepoStruct
 	err = r.db.Table("chats ch").Select("ch.id, ch.name, ch.avatar, COUNT(m.id) as count_mes").
 		Joins("Join messages m ON m.chat_id = ch.id").
 		Where("ch.id IN ?", chatId).
@@ -92,7 +92,7 @@ func (r *ChatRepository) CheckAdmin(userId, chatId uint) error {
 	return err
 }
 
-func (r *ChatRepository) GetLastMes(chatId uint) (lastMessage structs.LastMessage, err error) {
+func (r *ChatRepository) GetLastMes(chatId uint) (lastMessage chat.LastMessage, err error) {
 	err = r.db.Table("messages m").Select("m.context as content, u.username").
 		Joins("Join users u ON u.id = m.user_from_id").
 		Where("m.chat_id = ?", chatId).
@@ -108,7 +108,7 @@ func (r *ChatRepository) CreateMessage(message *ds.Message) error {
 	return err
 }
 
-func (r *ChatRepository) CreateMesUserShown(msg ds.Shown) error {
+func (r *ChatRepository) CreateMesUserShown(msg []ds.Shown) error {
 	err := r.db.Create(&msg).Error
 	return err
 }
@@ -120,12 +120,12 @@ func (r *ChatRepository) GetChatUsers(chatId uint) ([]uint, error) {
 	return chatusers, err
 }
 
-func (r *ChatRepository) SaveAttachments(attachment ds.Attachment) error {
+func (r *ChatRepository) SaveAttachments(attachment []ds.Attachment) error {
 	err := r.db.Create(&attachment).Error
 	return err
 }
 
-func (r *ChatRepository) SavePhotos(photos ds.Photo) error {
+func (r *ChatRepository) SavePhoto(photos []ds.Photo) error {
 	err := r.db.Create(&photos).Error
 	return err
 }

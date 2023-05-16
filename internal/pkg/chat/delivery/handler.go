@@ -126,7 +126,7 @@ func (h *Handler) ChangeChat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			logger.Log(http.StatusInternalServerError, err.Error(), r.Method, r.URL.Path, true)
 			writer.ErrorRespond(w, r, err, http.StatusInternalServerError)

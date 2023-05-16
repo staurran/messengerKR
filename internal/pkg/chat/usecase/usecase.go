@@ -112,19 +112,28 @@ func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
 	var photoSlice []ds.Photo
 	for _, photo := range inp.Photos {
 		photoRow := ds.Photo{MessageID: msg.Id, Photo: photo}
-		attachmentSlice = append(attachmentSlice, photoRow)
+		photoSlice = append(photoSlice, photoRow)
 	}
 	err = uc.ChatRepo.SaveAttachments(attachmentSlice)
 	if err != nil {
 		return err
 	}
-
-	if inp.Audio != 0 {
-		audio := ds.Audio{
+	var audio ds.Audio
+	if inp.Audio != "" {
+		audio = ds.Audio{
 			Audio:     inp.Audio,
 			MessageID: msg.Id,
 		}
 	}
 
+	err = uc.ChatRepo.SaveAudio(audio)
+	if err != nil {
+		return err
+	}
+
 	return nil
+}
+
+func (uc *ChatUseCase) GetMessages(userId uint, chatId uint) ([]chat.Message, error) {
+
 }

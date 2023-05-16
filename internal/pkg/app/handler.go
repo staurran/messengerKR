@@ -62,6 +62,4 @@ func (a *Application) InitRoutes(db *gorm.DB, authServ authProto.AuthClient) {
 	userDel.RegisterHTTPEndpoints(a.Router, ucUser)
 
 	authDel.RegisterHTTPEndpoints(a.Router, authServ)
-
-	a.Router.PathPrefix(chatServerOptions.PathPrefix).Handler(chatRouter)
 }

@@ -16,4 +16,5 @@ type IRepositoryChat interface {
 	SaveAttachments([]ds.Attachment) error
 	SavePhoto(photo []ds.Photo) error
 	SaveAudio(audio ds.Audio) error
+	GetMessages(userId, chatId uint) ([]Message, error)
 }

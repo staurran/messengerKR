@@ -35,9 +35,9 @@ type Message struct {
 	Content      string        `json:"content"`
 	UserFrom     string        `json:"userFrom"`
 	OriginalUser string        `json:"originalUser"`
-	Attachment   []uint        `json:"attachment"`
-	Photos       []uint        `json:"photo"`
-	Audio        uint          `json:"audio"`
+	Attachment   []string      `json:"attachment"`
+	Photos       []string      `json:"photo"`
+	Audio        string        `json:"audio"`
 	TimeCreated  time.Time     `json:"timeCreated"`
 	Reactions    []ReactionMes `json:"reactions"`
 	Shown        bool          `json:"shown"`
@@ -49,9 +49,9 @@ type ReactionMes struct {
 }
 
 type MessageInp struct {
-	Content    string `json:"content"`
-	ChatId     uint   `json:"chatId"`
-	Attachment []uint `json:"attachment"`
-	Photos     []uint `json:"photos"`
-	Audio      uint   `json:"audio"`
+	Content    string   `json:"content"`
+	ChatId     uint     `json:"chatId"`
+	Attachment []string `json:"attachment"`
+	Photos     []string `json:"photos"`
+	Audio      string   `json:"audio"`
 }

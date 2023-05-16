@@ -134,3 +134,11 @@ func (r *ChatRepository) SaveAudio(audio ds.Audio) error {
 	err := r.db.Create(&audio).Error
 	return err
 }
+
+func (r *ChatRepository) GetMessages(userId, chatId uint) ([]chat.Message, error) {
+	var messages []chat.Message
+	err := r.db.Table("messages m").Select().
+		Where("user_id = ? AND chat_id = ?", userId, chatId).
+		Order("m.id ASC").Find(&messages).Error
+	return messages, err
+}

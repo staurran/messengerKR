@@ -59,7 +59,15 @@ func (r *AuthRepository) ChangeUser(user dataStruct.User) error {
 		userDb.Bio = user.Bio
 	}
 
-	err = r.db.Save(&userDb).Error
+	if user.Username != "" {
+		userDb.Username = user.Username
+	}
+
+	if user.Avatar != "" {
+		userDb.Avatar = user.Avatar
+	}
+
+	err = r.db.Save(userDb).Error
 	return err
 }
 

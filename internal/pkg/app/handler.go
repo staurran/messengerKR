@@ -7,9 +7,6 @@ import (
 
 	"github.com/staurran/messengerKR.git/internal/app/middlewares"
 	authDel "github.com/staurran/messengerKR.git/internal/pkg/auth/delivery"
-	photoDel "github.com/staurran/messengerKR.git/internal/pkg/photo/delivery"
-	PhotoRepository "github.com/staurran/messengerKR.git/internal/pkg/photo/repository"
-	photoUC "github.com/staurran/messengerKR.git/internal/pkg/photo/usecase"
 	"github.com/staurran/messengerKR.git/service/proto/authProto"
 
 	chatDel "github.com/staurran/messengerKR.git/internal/pkg/chat/delivery"
@@ -48,10 +45,6 @@ func (a *Application) InitRoutes(db *gorm.DB, authServ authProto.AuthClient) {
 	a.Router.Use(func(h http.Handler) http.Handler {
 		return middleware.AuthMiddleware(authServ, h)
 	})
-
-	photoRepo := PhotoRepository.NewPhotoRepo(db)
-	ucPhoto := photoUC.NewPhotoUseCase(photoRepo)
-	photoDel.RegisterHTTPEndpoints(a.Router, ucPhoto)
 
 	chatRepo := ChatRepository.NewChatRepo(db)
 	ucChat := chatUC.NewChatUseCase(chatRepo)

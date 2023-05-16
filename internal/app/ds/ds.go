@@ -17,15 +17,9 @@ type User struct {
 	Id       uint   `sql:"type:uuid;primary_key;default:" json:"userId" gorm:"primarykey"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Avatar   string `json:"avatar"`
 	Phone    string `json:"phoneNumber"`
 	Bio      string `json:"bio"`
-}
-
-type UserPhoto struct {
-	Id     uint `sql:"unique;type:uuid;primary_key;servicedefault:" json:"userPhotoId" gorm:"primaryKey;unique"`
-	UserId uint `json:"userId" gorm:"foreignKey"`
-	Photo  uint `json:"photo"`
-	Avatar bool `json:"avatar"`
 }
 
 type Contact struct {

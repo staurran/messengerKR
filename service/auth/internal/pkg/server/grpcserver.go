@@ -23,7 +23,7 @@ func NewGPRCServer(authRepo authRepo.UserRepo) *GRPCServer {
 }
 
 func (s *GRPCServer) Register(ctx context.Context, req *auth.UserRegisterInfo) (*auth.UserResponse, error) {
-	user := dataStruct.User{Phone: req.Phone, Password: req.Password, Bio: req.Bio, Username: req.Username}
+	user := dataStruct.User{Phone: req.Phone, Password: req.Password, Bio: req.Bio, Username: req.Username, Avatar: req.Avatar}
 
 	hashedPass, err := CreatePass(user.Password)
 	if err != nil {
@@ -100,7 +100,7 @@ func (s *GRPCServer) Logout(ctx context.Context, req *auth.UserToken) (*auth.Res
 }
 
 func (s *GRPCServer) ChangeUser(ctx context.Context, req *auth.UserChangeInfo) (*auth.Response, error) {
-	user := dataStruct.User{Id: uint(req.UserId), Phone: req.Phone, Password: req.Password, Username: req.Username}
+	user := dataStruct.User{Id: uint(req.UserId), Phone: req.Phone, Password: req.Password, Username: req.Username, Bio: req.Bio, Avatar: req.Avatar}
 	if user.Password != "" {
 		hashedPass, err := CreatePass(user.Password)
 		if err != nil {

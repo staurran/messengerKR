@@ -17,7 +17,7 @@ message UserRegisterInfo{
   string password=2;
   string username=3;
   string bio=4;
-  string photo=5;
+  string avatar=6;
 }
 
 message UserChangeInfo{
@@ -26,7 +26,7 @@ message UserChangeInfo{
   string password=3;
   string username=4;
   string bio=5;
-  string photo=6;
+  string avatar=6;
 }
 
 message UserLoginInfo{

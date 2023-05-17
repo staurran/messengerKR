@@ -21,4 +21,9 @@ type IRepositoryChat interface {
 	GetChat(chatId uint) (ChatInp, error)
 	GetAttachments(messId uint) ([]string, error)
 	GetPhotos(messId uint) ([]string, error)
+	CheckReaction(reaction ds.Reaction) (bool, error)
+	CreateReaction(reaction ds.Reaction) error
+	ChangeReaction(reaction ds.Reaction) error
+	GetReactions(messageId uint) ([]ReactionList, error)
+	GetReactionGroup(messId uint) ([]ReactionMes, error)
 }

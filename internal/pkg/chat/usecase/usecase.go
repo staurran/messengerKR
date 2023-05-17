@@ -202,9 +202,40 @@ func (uc *ChatUseCase) GetMessages(userId uint, chatId uint) ([]chat.Message, er
 			return nil, err
 		}
 		messages[i].Photos = photos
+
+		reactions, err := uc.ChatRepo.GetReactionGroup(m.ID)
+		messages[i].Reactions = reactions
 	}
 
 	return messages, nil
+}
+
+func (uc *ChatUseCase) CreateReaction(reaction ds.Reaction) error {
+	exist, err := uc.ChatRepo.CheckReaction(reaction)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		err = uc.ChatRepo.CreateReaction(reaction)
+		if err != nil {
+			return err
+		}
+	} else {
+		err = uc.ChatRepo.ChangeReaction(reaction)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (uc *ChatUseCase) GetReaction(messageId uint) ([]chat.ReactionList, error) {
+	reactions, err := uc.ChatRepo.GetReactions(messageId)
+	if err != nil {
+		return nil, err
+	}
+
+	return reactions, err
 }
 
 func contains(sliceUint []uint, elem uint) bool {

@@ -180,3 +180,63 @@ func (r *ChatRepository) GetPhotos(messId uint) ([]string, error) {
 	err := r.db.Table("photos").Select("photo").Where("message_id = ?", messId).Find(&photos).Error
 	return photos, err
 }
+
+func (r *ChatRepository) CheckReaction(reaction ds.Reaction) (bool, error) {
+	var reactionDB ds.Reaction
+	err := r.db.First(&reactionDB, "message_id=? AND user_id=?", reaction.MessageID, reaction.UserID).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return false, err
+	}
+
+	if err == gorm.ErrRecordNotFound {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func (r *ChatRepository) CreateReaction(reaction ds.Reaction) error {
+	err := r.db.Create(&reaction).Error
+	return err
+}
+
+func (r *ChatRepository) ChangeReaction(reaction ds.Reaction) error {
+	var reactionDB ds.Reaction
+	err := r.db.Table("reactions").
+		Where("message_id=? AND user_id=?", reaction.MessageID, reaction.UserID).
+		Find(&reactionDB).Error
+	if err != nil {
+		return err
+	}
+	reactionDB.Name = reaction.Name
+	err = r.db.Save(&reactionDB).Error
+	return err
+}
+
+func (r *ChatRepository) GetReactions(messageId uint) ([]chat.ReactionList, error) {
+	var reactions []chat.ReactionList
+	err := r.db.Table("reactions r").Select("r.user_id, r.name as reaction, u.username, u.avatar").
+		Where("r.message_id = ?", messageId).
+		Joins("Join users u on u.id=r.user_id").
+		Find(&reactions).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return reactions, nil
+}
+
+func (r *ChatRepository) GetReactionGroup(messId uint) ([]chat.ReactionMes, error) {
+	var reactions []chat.ReactionMes
+
+	err := r.db.Table("reactions r").
+		Select("r.name as reaction, COUNT(r.user_id) as quantity").
+		Where("r.message_id =?", messId).
+		Group("r.name").
+		Find(&reactions).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return reactions, nil
+}

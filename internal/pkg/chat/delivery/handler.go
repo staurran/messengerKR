@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/staurran/messengerKR.git/internal/app/ds"
 	"github.com/staurran/messengerKR.git/internal/pkg/chat"
 	"github.com/staurran/messengerKR.git/utils/logger"
 	"github.com/staurran/messengerKR.git/utils/writer"
@@ -263,4 +264,78 @@ func (h *Handler) SendMessage(w http.ResponseWriter, r *http.Request) {
 
 	logger.Log(http.StatusOK, "Success", r.Method, r.URL.Path, false)
 	writer.Respond(w, r, map[string]interface{}{})
+}
+
+func (h *Handler) PostReaction(w http.ResponseWriter, r *http.Request) {
+	userIdDB := r.Context().Value("userId")
+	userId, ok := userIdDB.(uint32)
+	if !ok {
+		err := fmt.Errorf("cant get userId")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			logger.Log(http.StatusInternalServerError, err.Error(), r.Method, r.URL.Path, true)
+			writer.ErrorRespond(w, r, err, http.StatusInternalServerError)
+			return
+		}
+	}()
+
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+	var userJson ds.Reaction
+	err = json.Unmarshal(reqBody, &userJson)
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		err = fmt.Errorf("cant parse json")
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+	userJson.UserID = uint(userId)
+	err = h.useCase.CreateReaction(userJson)
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	logger.Log(http.StatusOK, "Success", r.Method, r.URL.Path, false)
+	writer.Respond(w, r, map[string]interface{}{})
+
+}
+
+func (h *Handler) GetReaction(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	messIdStr, ok := params["message"]
+	if !ok {
+		err := fmt.Errorf("no message")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	messId, err := strconv.Atoi(messIdStr)
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	reactions, err := h.useCase.GetReaction(uint(messId))
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	logger.Log(http.StatusOK, "Success", r.Method, r.URL.Path, false)
+	writer.Respond(w, r, map[string]interface{}{"reactions": reactions})
 }

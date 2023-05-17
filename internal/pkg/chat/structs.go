@@ -1,6 +1,8 @@
 package chat
 
-import "time"
+import (
+	"time"
+)
 
 type ChatInp struct {
 	Name        string `json:"name"`
@@ -53,4 +55,11 @@ type MessageInp struct {
 	Attachment []string `json:"attachment"`
 	Photos     []string `json:"photos"`
 	Audio      string   `json:"audio"`
+}
+
+type ReactionList struct {
+	Reaction string
+	UserId   uint   `json:"userId"`
+	Username string `json:"username"`
+	Avatar   string `json:"avatar"`
 }

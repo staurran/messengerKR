@@ -66,7 +66,6 @@ type Message struct {
 	Time    time.Time
 	UserId  uint
 	ChatId  uint
-	Shown   bool
 }
 
 type Shown struct {

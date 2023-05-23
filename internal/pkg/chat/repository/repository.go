@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"time"
 
 	"gorm.io/gorm"
 
@@ -104,6 +105,7 @@ func (r *ChatRepository) GetLastMes(chatId uint) (lastMessage chat.LastMessage, 
 }
 
 func (r *ChatRepository) CreateMessage(message *ds.Message) error {
+	message.Time = time.Now()
 	err := r.db.Create(message).Error
 	return err
 }
@@ -135,13 +137,13 @@ func (r *ChatRepository) SaveAudio(audio ds.Audio) error {
 	return err
 }
 
-func (r *ChatRepository) GetMessages(userId, chatId uint) ([]chat.Message, error) {
-	var messages []chat.Message
+func (r *ChatRepository) GetMessages(userId, chatId uint) ([]chat.MessageTemp, error) {
+	var messages []chat.MessageTemp
 	err := r.db.Table("messages m").
-		Select("m.id, m.content, m.user_id, m.time, a.audio, s.shown").
+		Select("m.id, m.content, m.user_id, m.time").
 		Joins("Left Join audios a on a.message_id=m.id").
-		Joins("Join showns s on s.message_id=m.id").
-		Where("s.user_id = ?", userId).
+		//Joins("Join showns s on s.message_id=m.id").
+		//Where("s.user_id = ?", userId).
 		Where("m.chat_id = ?", chatId).
 		Find(&messages).Error
 	return messages, err
@@ -239,4 +241,10 @@ func (r *ChatRepository) GetReactionGroup(messId uint) ([]chat.ReactionMes, erro
 	}
 
 	return reactions, nil
+}
+
+func (r *ChatRepository) GetInfoUser(userId uint) (chat.UserFrom, error) {
+	var user chat.UserFrom
+	err := r.db.Table("users").Select("id as user_id, username, avatar").Where("id=?", userId).Find(&user).Error
+	return user, err
 }

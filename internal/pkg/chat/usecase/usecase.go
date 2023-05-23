@@ -126,7 +126,7 @@ func (uc *ChatUseCase) GetChats(userId uint) ([]chat.ChatStruct, error) {
 }
 
 func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
-	msg := ds.Message{Content: inp.Content, UserId: userId, ChatId: inp.ChatId, Time: time.Now(), Shown: false}
+	msg := ds.Message{Content: inp.Content, UserId: userId, ChatId: inp.ChatId, Time: time.Now()}
 	chatUsers, err := uc.ChatRepo.GetChatUsers(inp.ChatId)
 	if err != nil {
 		return err
@@ -187,10 +187,12 @@ func (uc *ChatUseCase) CreateMessage(userId uint, inp chat.MessageInp) error {
 
 func (uc *ChatUseCase) GetMessages(userId uint, chatId uint) ([]chat.Message, error) {
 	messages, err := uc.ChatRepo.GetMessages(userId, chatId)
+	var result []chat.Message
 	if err != nil {
 		return nil, err
 	}
 	for i, m := range messages {
+
 		attachments, err := uc.ChatRepo.GetAttachments(m.ID)
 		if err != nil {
 			return nil, err
@@ -204,10 +206,30 @@ func (uc *ChatUseCase) GetMessages(userId uint, chatId uint) ([]chat.Message, er
 		messages[i].Photos = photos
 
 		reactions, err := uc.ChatRepo.GetReactionGroup(m.ID)
+		if err != nil {
+			return nil, err
+		}
 		messages[i].Reactions = reactions
+
+		user, err := uc.ChatRepo.GetInfoUser(m.UserId)
+		if err != nil {
+			return nil, err
+		}
+		msg := chat.Message{
+			ID:          m.ID,
+			Content:     m.Content,
+			UserFrom:    user,
+			Attachment:  attachments,
+			Reactions:   reactions,
+			Photos:      photos,
+			Audio:       m.Audio,
+			TimeCreated: m.TimeCreated,
+			Shown:       m.Shown,
+		}
+		result = append(result, msg)
 	}
 
-	return messages, nil
+	return result, nil
 }
 
 func (uc *ChatUseCase) CreateReaction(reaction ds.Reaction) error {

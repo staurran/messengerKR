@@ -140,7 +140,7 @@ func (r *ChatRepository) SaveAudio(audio ds.Audio) error {
 func (r *ChatRepository) GetMessages(userId, chatId uint) ([]chat.MessageTemp, error) {
 	var messages []chat.MessageTemp
 	err := r.db.Table("messages m").
-		Select("m.id, m.content, m.user_id, m.time").
+		Select("m.id, m.content, m.user_id, m.time as time_created").
 		Joins("Left Join audios a on a.message_id=m.id").
 		//Joins("Join showns s on s.message_id=m.id").
 		//Where("s.user_id = ?", userId).

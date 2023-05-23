@@ -7,6 +7,7 @@ type UseCase interface {
 	DeleteChat(chatId uint, userId uint) error
 	ChangeChat(chatId uint, userId uint, chat ChatInp) error
 	GetChats(userId uint) ([]ChatStruct, error)
+	GetChatInfo(chstId uint) (ChatInfo, error)
 
 	GetMessages(userId uint, chatId uint) ([]Message, error)
 	CreateMessage(userId uint, inp MessageInp) error

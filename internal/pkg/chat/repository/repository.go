@@ -166,8 +166,8 @@ func (r *ChatRepository) ChangeChatUserAdmin(chatId uint) error {
 
 func (r *ChatRepository) GetChat(chatId uint) (chat.ChatInp, error) {
 	var chatDB chat.ChatInp
-	err := r.db.Table("chats c").Select("c.name, c.description, c.avatar, ").
-		Where("c.id=?", chatId).Error
+	err := r.db.Table("chats c").Select("c. id, c.name, c.description, c.avatar").
+		Where("c.id=?", chatId).Find(&chatDB).Error
 	return chatDB, err
 }
 

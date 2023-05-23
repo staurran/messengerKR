@@ -260,6 +260,29 @@ func (uc *ChatUseCase) GetReaction(messageId uint) ([]chat.ReactionList, error) 
 	return reactions, err
 }
 
+func (uc *ChatUseCase) GetChatInfo(chatId uint) (chat.ChatInfo, error) {
+	chats, err := uc.ChatRepo.GetChat(chatId)
+	if err != nil {
+		return chat.ChatInfo{}, err
+	}
+	users, err := uc.ChatRepo.GetChatUsers(chatId)
+	if err != nil {
+		return chat.ChatInfo{}, err
+	}
+
+	result := chat.ChatInfo{Id: chatId, Name: chats.Name, Avatar: chats.Avatar}
+	var chatUsers []chat.UserFrom
+	for _, u := range users {
+		userChat, err := uc.ChatRepo.GetInfoUser(u)
+		if err != nil {
+			return chat.ChatInfo{}, err
+		}
+		chatUsers = append(chatUsers, userChat)
+	}
+	result.Users = chatUsers
+	return result, nil
+}
+
 func contains(sliceUint []uint, elem uint) bool {
 	for _, i := range sliceUint {
 		if i == elem {

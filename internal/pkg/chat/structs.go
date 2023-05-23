@@ -58,7 +58,7 @@ type Message struct {
 
 type UserFrom struct {
 	UserId   uint   `json:"userId"`
-	Username string `json:"name"`
+	Username string `json:"username"`
 	Avatar   string `json:"avatar"`
 }
 
@@ -80,4 +80,12 @@ type ReactionList struct {
 	UserId   uint   `json:"userId"`
 	Username string `json:"username"`
 	Avatar   string `json:"avatar"`
+}
+
+type ChatInfo struct {
+	Id          uint       `json:"id"`
+	Name        string     `json:"name"`
+	Users       []UserFrom `json:"users"`
+	Description string     `json:"description"`
+	Avatar      string     `json:"avatar"`
 }

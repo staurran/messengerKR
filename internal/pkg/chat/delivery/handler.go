@@ -161,6 +161,34 @@ func (h *Handler) ChangeChat(w http.ResponseWriter, r *http.Request) {
 	writer.Respond(w, r, map[string]interface{}{})
 }
 
+func (h *Handler) GetChatInfo(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	chatIdStr, ok := params["chat"]
+	if !ok {
+		err := fmt.Errorf("no chat")
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	chatId, err := strconv.Atoi(chatIdStr)
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	chatInfo, err := h.useCase.GetChatInfo(uint(chatId))
+	if err != nil {
+		logger.Log(http.StatusBadRequest, err.Error(), r.Method, r.URL.Path, true)
+		writer.ErrorRespond(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	logger.Log(http.StatusOK, "Success", r.Method, r.URL.Path, false)
+	writer.Respond(w, r, map[string]interface{}{"chat": chatInfo})
+}
+
 func (h *Handler) GetChats(w http.ResponseWriter, r *http.Request) {
 	userIdDB := r.Context().Value("userId")
 	userId, ok := userIdDB.(uint32)

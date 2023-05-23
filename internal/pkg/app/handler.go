@@ -39,11 +39,19 @@ var frontendHosts = []string{
 func (a *Application) InitRoutes(db *gorm.DB, authServ authProto.AuthClient) {
 
 	a.Router.Use(func(h http.Handler) http.Handler {
-		return middleware.CorsMiddleware(frontendHosts, h)
+		return middleware.AuthMiddleware(authServ, h)
 	})
 
 	a.Router.Use(func(h http.Handler) http.Handler {
-		return middleware.AuthMiddleware(authServ, h)
+		return middleware.CorsMiddleware(frontendHosts, h)
+	})
+
+	a.Router.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// fmt.Printf("OPTIONS")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Access-Control-Request-Headers, Access-Control-Request-Method, Connection, Host, Origin, User-Agent, Referer, Cache-Control, X-header")
+		return
 	})
 
 	chatRepo := ChatRepository.NewChatRepo(db)
@@ -55,4 +63,5 @@ func (a *Application) InitRoutes(db *gorm.DB, authServ authProto.AuthClient) {
 	userDel.RegisterHTTPEndpoints(a.Router, ucUser)
 
 	authDel.RegisterHTTPEndpoints(a.Router, authServ)
+
 }

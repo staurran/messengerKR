@@ -57,7 +57,7 @@ type Message struct {
 }
 
 type UserFrom struct {
-	UserId   uint   `json:"userId"`
+	UserId   uint   `json:"id"`
 	Username string `json:"username"`
 	Avatar   string `json:"avatar"`
 }

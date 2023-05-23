@@ -94,11 +94,11 @@ func (r *ChatRepository) CheckAdmin(userId, chatId uint) error {
 }
 
 func (r *ChatRepository) GetLastMes(chatId uint) (lastMessage chat.LastMessage, err error) {
-	err = r.db.Table("messages m").Select("m.context as content, u.username").
-		Joins("Join users u ON u.id = m.user_from_id").
+	err = r.db.Table("messages m").Select("m.content, u.username, m.time").
+		Joins("Join users u ON u.id = m.user_id").
 		Where("m.chat_id = ?", chatId).
-		Order("time_created desc").
-		Limit(1).
+		//Order("time_created desc").
+		//Limit(1).
 		Find(&lastMessage).Error
 
 	return lastMessage, nil

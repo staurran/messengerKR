@@ -14,12 +14,12 @@ type Chat struct {
 }
 
 type User struct {
-	Id       uint   `sql:"type:uuid;primary_key;default:" json:"userId" gorm:"primarykey"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Avatar   string `json:"avatar"`
-	Phone    string `json:"phoneNumber"`
-	Bio      string `json:"bio"`
+	Id       uint   `sql:"type:uuid;primary_key;default:" json:"userId" gorm:"primarykey" structs:"id"`
+	Username string `json:"username" structs:"username"`
+	Password string `json:"password" structs:"password"`
+	Avatar   string `json:"avatar" structs:"avatar"`
+	Phone    string `json:"phoneNumber" structs:"phoneNumber"`
+	Bio      string `json:"bio" structs:"bio"`
 }
 
 type Contact struct {

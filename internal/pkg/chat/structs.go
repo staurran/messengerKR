@@ -71,7 +71,7 @@ type MessageInp struct {
 	Content    string   `json:"content"`
 	ChatId     uint     `json:"chatId"`
 	Attachment []string `json:"attachment"`
-	Photos     []string `json:"photos"`
+	Photos     []string `json:"photo"`
 	Audio      string   `json:"audio"`
 }
 

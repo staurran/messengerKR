@@ -85,6 +85,7 @@ func (c *authClient) ChangeUser(ctx context.Context, in *UserChangeInfo, opts ..
 // AuthServer is the server API for Auth service.
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
+
 type AuthServer interface {
 	Register(context.Context, *UserRegisterInfo) (*UserResponse, error)
 	Login(context.Context, *UserLoginInfo) (*UserResponse, error)

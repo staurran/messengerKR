@@ -22,7 +22,7 @@ func RegisterHTTPEndpoints(router *mux.Router, uc chat.UseCase) {
 	router.HandleFunc("/iuchat/chat/{chat}", h.DeleteChat).Methods("DELETE")
 	router.HandleFunc("/iuchat/chat/{chat}", h.ChangeChat).Methods("PUT", "OPTION")
 	router.HandleFunc("/iuchat/chats", h.GetChats).Methods("GET")
-	router.HandleFunc("/iuchat/chat/{chat}", h.GetChatInfo).Methods("GET")
+	router.HandleFunc("/iuchat/chat/{chat}", h.GetChatInfo).Methods("GET", "OPTION")
 
 	router.HandleFunc("/iuchat/message/{chat}", h.GetMessages).Methods("GET")
 
